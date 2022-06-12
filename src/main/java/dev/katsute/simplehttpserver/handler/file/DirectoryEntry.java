@@ -48,12 +48,14 @@ public class DirectoryEntry {
 
         if(loadingOption != FileLoadingOption.LIVE){
             if(!isWalkthrough){
-                final File[] listFiles = Objects.requireNonNullElse(directory.listFiles(File::isFile), new File[0]);
-                for(final File file : listFiles)
-                    addFile(file);
+                final File[] listFiles = directory.listFiles(File::isFile);
+                if(listFiles != null)
+                    for(final File file : listFiles)
+                        addFile(file);
             }else{
                 try{
-                    Files.walkFileTree(directoryPath, new SimpleFileVisitor<>() {
+                    //noinspection Convert2Diamond
+                    Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() { // won't compile unless we explicitly set type
                         @Override
                         public final FileVisitResult visitFile(final Path path, final BasicFileAttributes attrs){
                             addDirectoryFile(path.toFile());
@@ -107,9 +109,11 @@ public class DirectoryEntry {
         final String fileName = targetFile.getParentFile() == null ? targetFile.getPath() : targetFile.getName();
 
         // for each file in parent directory, run adapter to find file that matches adapted name
-        for(final File file : Objects.requireNonNullElse(parentFile.listFiles(), new File[0]))
-            if(fileName.equals(adapter.getName(file)))
-                return file;
+        final File[] parentFiles = parentFile.listFiles();
+        if(parentFiles != null)
+            for(final File file : parentFiles)
+                if(fileName.equals(adapter.getName(file)))
+                    return file;
         return null;
     }
 

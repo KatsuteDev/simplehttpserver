@@ -130,9 +130,9 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
-    <name>OneMTA</name>
+    <name>SimpleHttpServer</name>
     <description>A simple and efficient HTTP server for Java</description>
-    <url>https://github.com/KatsuteDev/simplehttpser</url>
+    <url>https://github.com/KatsuteDev/simplehttpserver</url>
 
     <licenses>
         <license>
