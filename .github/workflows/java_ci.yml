@@ -1,0 +1,15 @@
+name: Java CI
+on:
+  push: {}
+  pull_request:
+    branches: [main]
+
+jobs:
+  java_ci:
+    name: Java CI
+    uses: Katsute/Workflows/.github/workflows/java.ci.yml@main
+    with:
+      package: true
+      report: true
+    secrets:
+      token: ${{ secrets.SINON }}

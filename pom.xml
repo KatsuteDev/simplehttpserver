@@ -1,0 +1,271 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>dev.katsute</groupId>
+    <artifactId>simplehttpserver</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <profiles>
+        <profile>
+            <id>ossrh</id>
+
+            <distributionManagement>
+                <snapshotRepository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <repository>
+                    <id>ossrh</id>
+                    <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+                </repository>
+            </distributionManagement>
+
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.13</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://s01.oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
+                    </plugin>
+
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>3.0.1</version>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                                <configuration>
+                                    <gpgArguments>
+                                        <arg>--pinentry-mode</arg>
+                                        <arg>loopback</arg>
+                                    </gpgArguments>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>github</id>
+
+            <distributionManagement>
+                <repository>
+                    <id>github</id>
+                    <url>https://maven.pkg.github.com/katsutedev/simplehttpserver</url>
+                </repository>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <!-- disable javadoc on java 8 -->
+            <id>java8</id>
+            <activation>
+                <jdk>(,8]</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-javadoc-plugin</artifactId>
+                            <version>3.4.0</version>
+                            <configuration>
+                                <skip>true</skip>
+                            </configuration>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+        <profile>
+            <!-- java 9 for modularity -->
+            <id>java9</id>
+            <activation>
+                <jdk>[9,)</jdk>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <groupId>org.apache.maven.plugins</groupId>
+                            <artifactId>maven-compiler-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <phase>compile</phase>
+                                    <goals>
+                                        <goal>compile</goal>
+                                    </goals>
+                                    <configuration>
+                                        <!-- compile java9 to META-INF for JDK 9 -->
+                                        <release>9</release>
+                                        <compileSourceRoots>
+                                            <compileSourceRoot>${project.basedir}/src/main/java9</compileSourceRoot>
+                                        </compileSourceRoots>
+                                        <multiReleaseOutput>true</multiReleaseOutput>
+                                    </configuration>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <name>OneMTA</name>
+    <description>A simple and efficient HTTP server for Java</description>
+    <url>https://github.com/KatsuteDev/simplehttpser</url>
+
+    <licenses>
+        <license>
+            <name>GPL-2</name>
+            <distribution>repo</distribution>
+            <url>https://github.com/KatsuteDev/simplehttpserver/blob/main/LICENSE</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>KatsuteDev</name>
+        <url>https://github.com/KatsuteDev</url>
+    </organization>
+
+    <developers>
+        <developer>
+            <name>Katsute</name>
+            <roles>
+                <role>developer</role>
+            </roles>
+            <url>https://github.com/Katsute</url>
+            <organization>KatsuteDev</organization>
+            <organizationUrl>https://github.com/KatsuteDev</organizationUrl>
+            <timezone>America/New_York</timezone>
+            <properties>
+                <picUrl>https://avatars.githubusercontent.com/u/58778985?v=4</picUrl>
+            </properties>
+        </developer>
+    </developers>
+
+    <scm>
+        <url>https://github.com/KatsuteDev/simplehttoserver.git</url>
+        <connection>scm:git:git@github.com:KatsuteDev/simplehttpserver.git</connection>
+        <developerConnection>scm:git:git@github.com:KatsuteDev/simplehttpserver.git</developerConnection>
+        <tag>HEAD</tag>
+    </scm>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.10.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.2.2</version>
+                <configuration>
+                    <archive>
+                        <manifestEntries>
+                            <Built-By>Katsute</Built-By>
+                            <Multi-Release>true</Multi-Release>
+                        </manifestEntries>
+                    </archive>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>3.2.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar-no-fork</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>3.4.0</version>
+                <configuration>
+                    <additionalOptions>
+                        <additionalOption>-public</additionalOption>
+                        <!-- fix h1 not working properly -->
+                        <additionalOption>-Xdoclint:-html</additionalOption>
+                        <!-- suppress missing documentation -->
+                        <additionalOption>-Xdoclint:-missing</additionalOption>
+                    </additionalOptions>
+                    <!-- generate javadoc for /java and /java9 -->
+                    <sourcepath>${project.basedir}/src/main/java;${project.basedir}/src/main/java9</sourcepath>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- tests -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M7</version>
+                <configuration>
+                    <useFile>true</useFile>
+                    <excludes>
+                        <exclude/>
+                    </excludes>
+                    <trimStackTrace>false</trimStackTrace>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <dependencies>
+        <!-- tests -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-api</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-params</artifactId>
+            <version>5.8.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+</project>
