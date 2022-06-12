@@ -18,28 +18,40 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.*;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
+import java.util.Map;
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+interface HttpServerExtensions {
 
-    SimpleHttpServer(){ }
+    InetSocketAddress bind(final int port) throws IOException;
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
-    }
-
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
-    }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
+    InetSocketAddress bind(final int port, final int backlog) throws IOException;
 
     //
 
-    public abstract HttpServer getHttpServer();
+    void setSessionHandler(final HttpSessionHandler sessionHandler);
+
+    HttpSessionHandler getSessionHandler();
+
+    HttpSession getSession(final HttpExchange exchange);
+
+    //
+
+    HttpHandler getContextHandler(final String context);
+
+    HttpHandler getContextHandler(final HttpContext context);
+
+    Map<HttpContext,HttpHandler> getContexts();
+
+    String getRandomContext();
+
+    String getRandomContext(final String context);
+
+    //
+
+    void stop();
 
 }

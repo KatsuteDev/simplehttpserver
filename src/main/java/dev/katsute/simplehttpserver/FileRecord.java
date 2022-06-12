@@ -18,28 +18,32 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpServer;
+import java.nio.charset.StandardCharsets;
+import java.util.*;
 
-import java.io.IOException;
+public class FileRecord extends Record {
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+    final String fileName, contentType;
+    private final byte[] bytes;
 
-    SimpleHttpServer(){ }
+    FileRecord(final Map.Entry<String,Map<String,?>> entry){
+        super(entry);
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+        fileName    = Objects.requireNonNull(Objects.requireNonNull(getHeader("Content-Disposition").getParameter("filename")));
+        contentType = Objects.requireNonNull(Objects.requireNonNull(getHeader("Content-Type")).getValue());
+        bytes       = getValue().getBytes(StandardCharsets.UTF_8);
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
+    public final String getFileName(){
+        return fileName;
     }
 
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
+    public final String getContentType(){
+        return contentType;
     }
 
-    //
-
-    public abstract HttpServer getHttpServer();
+    public final byte[] getBytes(){
+        return Arrays.copyOf(bytes, bytes.length);
+    }
 
 }

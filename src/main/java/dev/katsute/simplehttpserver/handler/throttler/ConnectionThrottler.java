@@ -16,30 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package dev.katsute.simplehttpserver;
+package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
 
-import java.io.IOException;
+public abstract class ConnectionThrottler {
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+    ConnectionThrottler(){ }
 
-    SimpleHttpServer(){ }
+    abstract boolean addConnection(final HttpExchange exchange);
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
-    }
+    abstract void deleteConnection(final HttpExchange exchange);
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
-    }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
+    public abstract int getMaxConnections(final HttpExchange exchange);
 
 }

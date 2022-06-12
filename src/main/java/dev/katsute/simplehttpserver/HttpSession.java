@@ -18,28 +18,16 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpServer;
+public abstract class HttpSession {
 
-import java.io.IOException;
+    HttpSession(){ }
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+    public abstract String getSessionID();
 
-    SimpleHttpServer(){ }
+    public abstract long getCreationTime();
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
-    }
+    public abstract long getLastAccessed();
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
-    }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
+    public abstract void update();
 
 }

@@ -18,28 +18,18 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+public interface SimpleHttpHandler extends HttpHandler {
 
-    SimpleHttpServer(){ }
-
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+    @Override
+    default void handle(final HttpExchange exchange) throws IOException {
+        handle(SimpleHttpExchange.create(exchange));
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
-    }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
+    void handle(final SimpleHttpExchange exchange) throws IOException;
 
 }

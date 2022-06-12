@@ -16,30 +16,27 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package dev.katsute.simplehttpserver;
+package dev.katsute.simplehttpserver.handler;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+public class RedirectHandler implements HttpHandler {
 
-    SimpleHttpServer(){ }
+    private final String link;
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+    public RedirectHandler(final String link){
+        this.link = link;
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
+    @Override
+    public final void handle(final HttpExchange exchange) throws IOException{
+        exchange.getResponseHeaders().set("Location", link);
+        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        exchange.close();
     }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
 
 }

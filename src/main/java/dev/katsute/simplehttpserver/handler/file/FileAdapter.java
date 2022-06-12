@@ -16,30 +16,18 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package dev.katsute.simplehttpserver;
+package dev.katsute.simplehttpserver.handler.file;
 
-import com.sun.net.httpserver.HttpServer;
+import java.io.File;
 
-import java.io.IOException;
+public interface FileAdapter {
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
-
-    SimpleHttpServer(){ }
-
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+    default String getName(final File file){
+        return file.getName();
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
+    default byte[] getBytes(final File file, final byte[] bytes){
+        return bytes;
     }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
 
 }

@@ -18,28 +18,23 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpServer;
+import java.util.HashMap;
+import java.util.Map;
 
-import java.io.IOException;
+public class MultipartFormData {
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+    private final Map<String,Record> data;
 
-    SimpleHttpServer(){ }
-
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+    MultipartFormData(final Map<String,Record> data){
+        this.data = new HashMap<>(data);
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
+    public final Record getEntry(final String name){
+        return data.get(name);
     }
 
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
+    public final Map<String,Record> getEntries(){
+        return new HashMap<>(data);
     }
-
-    //
-
-    public abstract HttpServer getHttpServer();
 
 }

@@ -16,30 +16,28 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-package dev.katsute.simplehttpserver;
+package dev.katsute.simplehttpserver.handler;
 
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.util.function.Predicate;
 
-public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
+public class PredicateHandler implements HttpHandler {
 
-    SimpleHttpServer(){ }
+    private final HttpHandler T, F;
+    private final Predicate<HttpExchange> predicate;
 
-    public static SimpleHttpServer create() throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(null, null);
+    public PredicateHandler(final Predicate<HttpExchange> predicate, final HttpHandler handlerIfTrue, HttpHandler handlerIfFalse){
+        this.T = handlerIfTrue;
+        this.F = handlerIfFalse;
+        this.predicate = predicate;
     }
 
-    public static SimpleHttpServer create(final int port) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, null);
+    @Override
+    public final void handle(final HttpExchange exchange) throws IOException{
+        (predicate.test(exchange) ? T : F).handle(exchange);
     }
-
-    public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpServerImpl.createHttpServer(port, backlog);
-    }
-
-    //
-
-    public abstract HttpServer getHttpServer();
 
 }

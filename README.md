@@ -23,7 +23,6 @@
 <br>
 
 > **Warning**
->
 > simplehttpserver5 is not compatible with any previous version of [simplehttpserver](https://github.com/Ktt-Development/simplehttpserver)
 
 🚧 WIP
