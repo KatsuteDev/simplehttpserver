@@ -1,7 +1,6 @@
 module SimpleHttpServer {
 
     requires jdk.httpserver;
-    requires java.net.http;
 
     exports dev.katsute.simplehttpserver.handler.file;
     exports dev.katsute.simplehttpserver.handler.throttler;
