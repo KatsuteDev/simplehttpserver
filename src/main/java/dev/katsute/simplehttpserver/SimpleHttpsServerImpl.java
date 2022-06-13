@@ -89,6 +89,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
         bind(address, null);
     }
 
+    @Override
     public synchronized void bind(final InetSocketAddress address, final int backlog) throws IOException {
         bind(address, (Integer) backlog);
     }
@@ -107,25 +108,26 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
     //
 
     @Override
+    public synchronized final Executor getExecutor(){
+        return server.getExecutor();
+    }
+
+    @Override
     public synchronized final void setExecutor(final Executor executor){
         server.setExecutor(executor);
     }
 
-    @Override
-    public final Executor getExecutor(){
-        return server.getExecutor();
-    }
 
     //
 
     @Override
-    public synchronized final void setSessionHandler(final HttpSessionHandler sessionHandler){
-        this.sessionHandler = sessionHandler;
+    public synchronized final HttpSessionHandler getSessionHandler(){
+        return sessionHandler;
     }
 
     @Override
-    public final HttpSessionHandler getSessionHandler(){
-        return sessionHandler;
+    public synchronized final void setSessionHandler(final HttpSessionHandler sessionHandler){
+        this.sessionHandler = sessionHandler;
     }
 
     @Override
