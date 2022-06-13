@@ -31,7 +31,7 @@ public abstract class SimpleHttpExchange extends HttpExchange {
     SimpleHttpExchange(){ }
 
     static SimpleHttpExchange create(final HttpExchange exchange){
-        return null;
+        return new SimpleHttpExchangeImpl(exchange);
     }
 
     //

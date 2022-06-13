@@ -34,10 +34,6 @@ final class SimpleHttpServerImpl extends SimpleHttpServer {
 
     private final Map<HttpContext, HttpHandler> contexts = Collections.synchronizedMap(new HashMap<>());
 
-    static SimpleHttpServer createHttpServer(final Integer port, final Integer backlog) throws IOException{
-        return new SimpleHttpServerImpl(port, backlog);
-    }
-
     SimpleHttpServerImpl(final Integer port, final Integer backlog) throws IOException{
         if(port != null)
             server.bind(new InetSocketAddress(port), backlog != null ? backlog : 0);

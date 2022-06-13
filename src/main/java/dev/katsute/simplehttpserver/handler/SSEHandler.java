@@ -66,12 +66,12 @@ public class SSEHandler implements SimpleHttpHandler {
         }catch(final NumberFormatException | NullPointerException ignored){ }
 
         exchange.send(HttpURLConnection.HTTP_OK);
-        for(int index = latest; index < queue.size(); index++){
+        for(int index = latest; index < queue.size(); index++){ // write latest events
             exchange.getResponseBody().write(queue.get(index).toString(eventID.get()).getBytes(StandardCharsets.UTF_8));
             exchange.getResponseBody().flush();
         }
 
-        listeners.add(exchange.getResponseBody());
+        listeners.add(exchange.getResponseBody()); // track events
     }
 
     public synchronized final void push(final String data){
@@ -82,11 +82,13 @@ public class SSEHandler implements SimpleHttpHandler {
         eventID.addAndGet(1);
         final EventStreamRecord record = new EventStreamRecord(retry, event, data);
         queue.add(record);
-        for(final OutputStream OUT : listeners){
+        for(final OutputStream OUT : listeners){ // push events to all clients
             try{
                 OUT.write(record.toString(eventID.get()).getBytes(StandardCharsets.UTF_8));
                 OUT.flush();
-            }catch(final IOException ignored){ }
+            }catch(final IOException ignored){ // internal error or closed
+                listeners.remove(OUT); // remove from tracking
+            }
         }
     }
 

@@ -18,43 +18,43 @@
 
 package dev.katsute.simplehttpserver.handler.file;
 
-import dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption;
-
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.concurrent.atomic.AtomicLong;
+
+import static dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption.*;
 
 final class FileEntry {
 
     private final File file;
+    private final Path path;
     private final FileAdapter adapter;
-    private final FileLoadingOption loadingOption;
-
-    private byte[] bytes = null;
-
-    private final AtomicLong lastModified = new AtomicLong();
-
-    private final AtomicLong expiry = new AtomicLong(0); // cache only
-    private final long cacheTime; // cache only
+    private final FileOptions options;
 
     //
 
-    FileEntry(final File file, final FileAdapter fileAdapter, final FileLoadingOption loadingOption){
-        if(loadingOption == FileLoadingOption.CACHE && !(fileAdapter instanceof CacheFileAdapter))
-            throw new IllegalArgumentException("CACHE option must use a CacheFileAdapter");
+    private byte[] bytes = null;
 
-        this.file           = file;
-        this.adapter        = fileAdapter;
-        this.loadingOption  = loadingOption;
-        this.cacheTime      = fileAdapter instanceof CacheFileAdapter ? ((CacheFileAdapter) fileAdapter).getCacheTimeMillis() : -1;
+    private final AtomicLong lastModified = new AtomicLong(); // modify only
 
-        if(loadingOption != FileLoadingOption.LIVE && loadingOption != FileLoadingOption.CACHE){
+    private final AtomicLong expiry = new AtomicLong(-1); // cache only
+
+    //
+
+    FileEntry(final File file, final FileAdapter fileAdapter, final FileOptions options){ // <- change to this!
+        this.file    = file;
+        this.path    = file.toPath();
+        this.adapter = fileAdapter;
+        this.options = options;
+
+        if(options.loading == PRELOAD || options.loading == MODIFY){
             try{
-                bytes = adapter.getBytes(file, Files.readAllBytes(file.toPath()));
+                bytes = adapter.getBytes(file, Files.readAllBytes(path));
             }catch(final Throwable ignored){
                 bytes = null;
             }finally{
-                if(loadingOption != FileLoadingOption.PRELOAD)
+                if(options.loading == MODIFY)
                     lastModified.set(file.lastModified());
             }
         }
@@ -62,54 +62,64 @@ final class FileEntry {
 
     //
 
-    public final File getFile(){
+    final File getFile(){
         return file;
     }
 
-    public synchronized final void reloadBytes(){
-        if(loadingOption == FileLoadingOption.PRELOAD || loadingOption == FileLoadingOption.LIVE)
-            throw new UnsupportedOperationException();
-        lastModified.set(file.lastModified());
-        try{
-            bytes = adapter.getBytes(file, Files.readAllBytes(file.toPath()));
-        }catch(final Throwable ignored){
-            bytes = null;
+    synchronized final void reloadBytes(){
+        switch(options.loading){
+            default:
+            case PRELOAD:
+            case LIVE:
+                throw new UnsupportedOperationException("Reload is only supported for CACHE and MODIFY options");
+            case MODIFY:
+                lastModified.set(file.lastModified());
+            case CACHE:
+                expiry.getAndUpdate(was -> System.currentTimeMillis() + options.cache); // reset expiry
+                try{
+                    bytes = adapter.getBytes(file, Files.readAllBytes(path));
+                }catch(final Throwable ignored){
+                    bytes = null;
+                }
         }
     }
 
-    public synchronized final void clearBytes(){
-        if(loadingOption == FileLoadingOption.PRELOAD || loadingOption == FileLoadingOption.LIVE)
-            throw new UnsupportedOperationException();
-        lastModified.set(0);
-        bytes = null;
+    synchronized final void clearBytes(){
+        switch(options.loading){
+            default:
+            case PRELOAD:
+            case LIVE:
+                throw new UnsupportedOperationException("Clear is only supported for CACHE and MODIFY options");
+            case MODIFY:
+                lastModified.set(-1); // force getBytes to re-fetch
+            case CACHE:
+                bytes = null;
+        }
     }
 
-    public final byte[] getBytes(){
-        switch(loadingOption){
-            case MODIFY:
-            case CACHE:
-                final long now = System.currentTimeMillis();
-                // update the file if it was modified or now exceeds the expiry time
-                if((loadingOption == FileLoadingOption.CACHE && now > expiry.getAndUpdate(was -> now + cacheTime)) || file.lastModified() != lastModified.get())
-                    reloadBytes();
+    final byte[] getBytes(){
+        switch(options.loading){
             case PRELOAD:
                 return bytes;
             default:
             case LIVE:
                 try{
-                    return adapter.getBytes(file, Files.readAllBytes(file.toPath())); // read and adapt bytes
-                }catch(final Throwable ignored){
-                    return null;
-                }
+                    return adapter.getBytes(file, Files.readAllBytes(path)); // read and adapt bytes
+                }catch(final Throwable ignored){ }
+                return null;
+            case MODIFY:
+                if(file.lastModified() != lastModified.get()) // reload if modified
+                    reloadBytes();
+                return bytes;
+            case CACHE:
+                if(bytes == null || isExpired()) // fetch if no data or re-fetch if expired
+                    reloadBytes();
+                return bytes;
         }
     }
 
-    public final FileLoadingOption getLoadingOption(){
-        return loadingOption;
-    }
-
-    final long getExpiry(){
-        return expiry.get();
+    final boolean isExpired(){
+        return options.loading == CACHE && expiry.get() < System.currentTimeMillis();
     }
 
 }

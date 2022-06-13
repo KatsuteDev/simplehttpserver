@@ -29,7 +29,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ServerSessionThrottler extends ConnectionThrottler {
 
-private final HttpSessionHandler sessionHandler;
+    private final HttpSessionHandler sessionHandler;
     private final Map<HttpSession,AtomicInteger> connections = new ConcurrentHashMap<>();
 
     private final AtomicInteger connCount = new AtomicInteger(0);
@@ -46,59 +46,58 @@ private final HttpSessionHandler sessionHandler;
 
     @Override
     final boolean addConnection(final HttpExchange exchange){
-        final HttpSession session = sessionHandler.getSession(exchange);
-        final int sessionMaxConn = getMaxConnections(session, exchange);
+        final HttpSession session = sessionHandler.getSession(exchange); // session
+        final int sessionMaxConn = getMaxConnections(session, exchange); // max allowed for this session
 
-        if(!connections.containsKey(session))
-            connections.put(session, new AtomicInteger(0));
+        connections.putIfAbsent(session, new AtomicInteger(0));
 
-        final AtomicInteger conn = connections.get(session);
+        final AtomicInteger conn = connections.get(session); // current connections
         final boolean exempt = canIgnoreConnectionLimit(session, exchange);
 
         if(sessionMaxConn < 0){
             if(!exempt){
+                final int maxServerConn = maxConn.get();
                 synchronized(this){
-                    final int maxServerConn = maxConn.get();
-                    if(maxServerConn < 0 || connCount.get() < maxServerConn){
-                        conn.incrementAndGet();
-                        connCount.incrementAndGet();
+                    if(maxServerConn < 0 || connCount.get() < maxServerConn){ // if space for session conn
+                        conn.incrementAndGet(); // increase session conn
+                        connCount.incrementAndGet(); // increase server conn
                         return true;
                     }
-                    return false;
+                    return false; // no space
                 }
             }else{
-                conn.incrementAndGet();
-                return true;
+                conn.incrementAndGet(); // increase server conn
+                return true; // always space for exempt
             }
         }else{
             if(!exempt){
+                final int maxServerConn = maxConn.get();
                 synchronized(this){
-                    final int maxServerConn = maxConn.get();
-                    if(conn.get() < sessionMaxConn && (maxServerConn < 0 || connCount.get() < maxServerConn)){
-                        conn.incrementAndGet();
-                        connCount.incrementAndGet();
+                    if(conn.get() < sessionMaxConn && (maxServerConn < 0 || connCount.get() < maxServerConn)){ // if space for both conn
+                        conn.incrementAndGet(); // increase client conn
+                        connCount.incrementAndGet(); // increase server conn
                         return true;
                     }
-                    return false;
+                    return false; // no space
                 }
             }else{
                 final AtomicBoolean added = new AtomicBoolean(false);
                 conn.updateAndGet(operand -> {
-                   if(operand < sessionMaxConn) added.set(true);
-                   return operand < sessionMaxConn ? operand + 1 : operand;
+                   if(operand < sessionMaxConn) added.set(true); // if space then allow addition
+                   return operand < sessionMaxConn ? operand + 1 : operand; // add if space, otherwise no change
                 });
-                return added.get();
+                return added.get(); // return if space
             }
         }
     }
 
     @Override
     final void deleteConnection(final HttpExchange exchange){
-        final HttpSession session = sessionHandler.getSession(exchange);
+        final HttpSession session = sessionHandler.getSession(exchange); // session
         if(connections.containsKey(session)){
-            connections.get(session).decrementAndGet();
-            if(!canIgnoreConnectionLimit(session, exchange))
-                connCount.decrementAndGet();
+            connections.get(session).decrementAndGet(); // decrease connection
+            if(!canIgnoreConnectionLimit(session, exchange)) // exempt doesn't count towards server conn
+                connCount.decrementAndGet(); // decrease server conn
         }
     }
 

@@ -34,32 +34,31 @@ public class ExchangeThrottler extends ConnectionThrottler {
 
     @Override
     final boolean addConnection(final HttpExchange exchange){
-        final InetAddress address = exchange.getRemoteAddress().getAddress();
-        final int maxConn = getMaxConnections(exchange);
+        final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
+        final int maxConn = getMaxConnections(exchange); // max allowed for this address
 
-        if(!connections.containsKey(address))
-            connections.put(address, new AtomicInteger(0));
+        connections.putIfAbsent(address, new AtomicInteger(0));
 
-        final AtomicInteger conn = connections.get(address);
+        final AtomicInteger conn = connections.get(address); // current connections
 
-        if(maxConn < 0){
+        if(maxConn < 0){ // unlimited connections allowed
             conn.incrementAndGet();
             return true;
         }else{
             final AtomicBoolean added = new AtomicBoolean(false);
             conn.updateAndGet(operand -> {
-                if(operand < maxConn) added.set(true);
-                return operand < maxConn ? operand + 1 : operand;
+                if(operand < maxConn) added.set(true); // if space then allow addition
+                return operand < maxConn ? operand + 1 : operand; // add if space, otherwise no change
             });
-            return added.get();
+            return added.get(); // return if space
         }
     }
 
     @Override
     final void deleteConnection(final HttpExchange exchange){
-        final InetAddress address = exchange.getRemoteAddress().getAddress();
+        final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         if(connections.containsKey(address))
-            connections.get(address).decrementAndGet();
+            connections.get(address).decrementAndGet(); // decrease connections
     }
 
     @Override

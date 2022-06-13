@@ -18,47 +18,50 @@
 
 package dev.katsute.simplehttpserver.handler.file;
 
-import dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption;
-
 import java.io.*;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
+import static dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption.*;
+
 public class DirectoryEntry {
 
-    private final File directory;
+    private final File file;
+    private final Path path;
+    @SuppressWarnings("SpellCheckingInspection")
+    private final String abs, absl;
     private final FileAdapter adapter;
-    private final FileLoadingOption loadingOption;
-    private final boolean isWalkthrough;
-
-    private final Map<String,FileEntry> files = new ConcurrentHashMap<>(); // non LIVE only
-    private final Path directoryPath;
+    private final FileOptions options;
 
     //
 
-    DirectoryEntry(final File directory, final FileAdapter adapter, final FileLoadingOption loadingOption, final boolean isWalkthrough){
-        this.directory     = directory;
-        this.adapter       = adapter;
-        this.loadingOption = loadingOption;
-        this.isWalkthrough = isWalkthrough;
+    private final Map<String,FileEntry> files = new ConcurrentHashMap<>(); // non LIVE only
 
-        directoryPath      = directory.toPath();
+    //
 
-        if(loadingOption != FileLoadingOption.LIVE){
-            if(!isWalkthrough){
-                final File[] listFiles = directory.listFiles(File::isFile);
-                if(listFiles != null)
-                    for(final File file : listFiles)
-                        addFile(file);
+    DirectoryEntry(final File directory, final FileAdapter adapter, final FileOptions options){
+        this.file     = directory;
+        this.path     = directory.toPath();
+        this.abs      = directory.getAbsolutePath();
+        this.absl     = this.abs.toLowerCase();
+        this.adapter  = adapter;
+        this.options  = options;
+
+        if(this.options.loading != LIVE){
+            if(!options.walk){
+                final File[] files = directory.listFiles(File::isFile);
+                if(files != null)
+                    for(final File f : files)
+                        addFile(f);
             }else{
                 try{
                     //noinspection Convert2Diamond
-                    Files.walkFileTree(directoryPath, new SimpleFileVisitor<Path>() { // won't compile unless we explicitly set type
+                    Files.walkFileTree(path, new SimpleFileVisitor<Path>() {
                         @Override
-                        public final FileVisitResult visitFile(final Path path, final BasicFileAttributes attrs){
-                            addDirectoryFile(path.toFile());
+                        public final FileVisitResult visitFile(final Path p, final BasicFileAttributes attrs){
+                            addDirectoryFile(p.toFile());
                             return FileVisitResult.CONTINUE;
                         }
                     });
@@ -73,59 +76,54 @@ public class DirectoryEntry {
     private void addFile(final File file){
         files.put(
             ContextUtility.getContext(adapter.getName(file), true, false),
-            new FileEntry(file, adapter, loadingOption)
+            new FileEntry(file, adapter, options)
         );
     }
 
     // file in sub directories
     private void addDirectoryFile(final File file){
-        final String relative = directoryPath.relativize(file.toPath().getParent()).toString(); // attach the relative path (parent) to the adapted file name
         files.put(
-            ContextUtility.joinContexts(true, false, relative, adapter.getName(file)),
-            new FileEntry(file, adapter, loadingOption)
+            ContextUtility.joinContexts(true, false, path.relativize(file.toPath().getParent()).toString(), adapter.getName(file)),
+            new FileEntry(file, adapter, options)
         );
     }
 
     //
 
-    public final File getDirectory(){
-        return directory;
+    final Map<String,FileEntry> getFiles(){
+        return new HashMap<>(files); // dereference
     }
 
-    public final Map<String,FileEntry> getFiles(){
-        return new HashMap<>(files);
-    }
-
-    public final File getFile(final String path){
-        final String relative   = ContextUtility.getContext(path, true, false);
-        final String dabs       = directory.getAbsolutePath();
-        final File parentFile   = new File(dabs + relative).getParentFile();
-        final String pabs       = parentFile.getAbsolutePath();
+    @SuppressWarnings("SpellCheckingInspection")
+    final File getFile(final String path){ // file names are case insensitive
+        final String relative = ContextUtility.getContext(path, true, false);
+        final File parentFile = new File(abs + relative).getParentFile();
+        final String pabs     = parentFile.getAbsolutePath();
 
         // if not top level directory or if not child of directory folder, then return null file
-        if(!pabs.equals(dabs) && (!isWalkthrough || !pabs.startsWith(dabs))) return null;
+        if(!pabs.equalsIgnoreCase(abs) && (!options.walk || !pabs.toLowerCase().startsWith(absl))) return null;
 
-        final File targetFile = Paths.get(dabs, relative).toFile();
+        final File targetFile = Paths.get(abs, relative).toFile();
         final String fileName = targetFile.getParentFile() == null ? targetFile.getPath() : targetFile.getName();
 
         // for each file in parent directory, run adapter to find file that matches adapted name
         final File[] parentFiles = parentFile.listFiles();
         if(parentFiles != null)
             for(final File file : parentFiles)
-                if(fileName.equals(adapter.getName(file)))
+                if(fileName.equalsIgnoreCase(adapter.getName(file)))
                     return file;
         return null;
     }
 
-    public final FileEntry getFileEntry(final String path){
+    final FileEntry getFileEntry(final String path){
         final String context  = ContextUtility.getContext(path, true, false);
         final FileEntry entry = files.get(context);
         if(entry == null){ // add new entry if not already added and file exists
             final File file = getFile(path);
             return file != null && file.exists()
-                ? loadingOption != FileLoadingOption.LIVE // only add to files if not LIVE
-                    ? files.put(context, new FileEntry(file, adapter, loadingOption))
-                    : new FileEntry(file, adapter, loadingOption)
+                ? options.loading != LIVE // only add to files if not LIVE
+                    ? files.put(context, new FileEntry(file, adapter, options))
+                    : new FileEntry(file, adapter, options)
                 : null;
         }else if(!entry.getFile().exists()){ // remove entry if file no longer exists
             files.remove(context);
@@ -135,26 +133,18 @@ public class DirectoryEntry {
         }
     }
 
-    public final byte[] getBytes(final String path){
-        if(loadingOption != FileLoadingOption.LIVE ){ // find preloaded bytes
+    final byte[] getBytes(final String path){
+        if(options.loading != LIVE ){ // find preloaded bytes
             final FileEntry entry = getFileEntry(path);
             return entry != null ? entry.getBytes() : null;
         }else{
             try{
                 final File file = Objects.requireNonNull(getFile(path)); // check if file is allowed
                 return file.isFile() ? adapter.getBytes(file, Files.readAllBytes(file.toPath())) : null; // adapt bytes here
-            }catch(final NullPointerException | IOException ignored){
+            }catch(final Throwable ignored){
                 return null;
             }
         }
-    }
-
-    public final FileLoadingOption getLoadingOption(){
-        return loadingOption;
-    }
-
-    public final boolean isWalkthrough(){
-        return isWalkthrough;
     }
 
 }

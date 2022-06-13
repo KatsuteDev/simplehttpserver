@@ -22,6 +22,8 @@ import java.util.regex.Pattern;
 
 abstract class ContextUtility {
 
+    private ContextUtility(){ }
+
     // replace consecutive slashes and back slashes with a single forward slash
     @SuppressWarnings("RegExpRedundantEscape")
     private static final Pattern forwardSlash = Pattern.compile("\\/{2,}|\\\\+");

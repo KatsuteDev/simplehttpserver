@@ -38,32 +38,31 @@ public class SessionThrottler extends ConnectionThrottler {
 
     @Override
     final boolean addConnection(final HttpExchange exchange){
-        final HttpSession session = sessionHandler.getSession(exchange);
-        final int maxConn = getMaxConnections(session, exchange);
+        final HttpSession session = sessionHandler.getSession(exchange); // session
+        final int maxConn = getMaxConnections(session, exchange); // max allowed for session
 
-        if(!connections.containsKey(session))
-            connections.put(session, new AtomicInteger(0));
+        connections.putIfAbsent(session, new AtomicInteger(0));
 
-        final AtomicInteger conn = connections.get(session);
+        final AtomicInteger conn = connections.get(session); // current connections
 
-        if(maxConn < 0){
+        if(maxConn < 0){ // unlimited connections allowed
             conn.incrementAndGet();
             return true;
         }else{
             final AtomicBoolean added = new AtomicBoolean(false);
             conn.updateAndGet(operand -> {
-                if(operand < maxConn) added.set(true);
-                return operand < maxConn ? operand + 1 : operand;
+                if(operand < maxConn) added.set(true); // if space then allow addition
+                return operand < maxConn ? operand + 1 : operand; // add if space, otherwise no change
             });
-            return added.get();
+            return added.get(); // return if space
         }
     }
 
     @Override
     final void deleteConnection(final HttpExchange exchange){
-        final HttpSession session = sessionHandler.getSession(exchange);
+        final HttpSession session = sessionHandler.getSession(exchange); // session
         if(connections.containsKey(session))
-            connections.get(session).decrementAndGet();
+            connections.get(session).decrementAndGet(); // decrease connections
     }
 
     @Override

@@ -22,9 +22,18 @@ public class FileOptions {
 
     public FileOptions(){ }
 
+    FileOptions(final FileOptions options){
+        this.context = options.context;
+        this.loading = options.loading;
+        this.cache   = options.cache;
+        this.walk    = options.walk;
+    }
+
     public String context = "";
 
     public FileLoadingOption loading = FileLoadingOption.LIVE;
+
+    public long cache = 0;
 
     public boolean walk = false;
 
@@ -50,6 +59,11 @@ public class FileOptions {
 
         public final Builder setLoadingOption(final FileLoadingOption option){
             options.loading = option;
+            return this;
+        }
+
+        public final Builder setCache(final long cache){
+            options.cache = cache;
             return this;
         }
 

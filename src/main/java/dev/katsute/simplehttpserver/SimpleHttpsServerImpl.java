@@ -32,11 +32,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     private HttpSessionHandler sessionHandler;
 
-    private final Map<HttpContext, HttpHandler> contexts = Collections.synchronizedMap(new HashMap<>());
-
-    static SimpleHttpsServer createHttpsServer(final Integer port, final Integer backlog) throws IOException{
-        return new SimpleHttpsServerImpl(port, backlog);
-    }
+    private final Map<HttpContext,HttpHandler> contexts = Collections.synchronizedMap(new HashMap<>());
 
     SimpleHttpsServerImpl(final Integer port, final Integer backlog) throws IOException{
         if(port != null)

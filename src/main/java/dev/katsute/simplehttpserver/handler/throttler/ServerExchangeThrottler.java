@@ -41,59 +41,58 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
 
     @Override
     final boolean addConnection(final HttpExchange exchange){
-        final InetAddress address = exchange.getRemoteAddress().getAddress();
-        final int clientMaxConn = getMaxConnections(exchange);
+        final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
+        final int clientMaxConn = getMaxConnections(exchange); // max allowed for this address
 
-        if(!connections.containsKey(address))
-            connections.put(address, new AtomicInteger(0));
+        connections.putIfAbsent(address, new AtomicInteger(0));
 
-        final AtomicInteger conn = connections.get(address);
-        final boolean exempt = canIgnoreConnectionLimit(exchange);
+        final AtomicInteger conn = connections.get(address); // current connections
+        final boolean exempt = canIgnoreConnectionLimit(exchange); // if exempt from limit
 
-        if(clientMaxConn < 0){
+        if(clientMaxConn < 0){ // unlimited client conn
             if(!exempt){
+                final int maxServerConn = maxConn.get();
                 synchronized(this){
-                    final int maxServerConn = maxConn.get();
-                    if(maxServerConn < 0 || connCount.get() < maxServerConn){
-                        conn.incrementAndGet();
-                        connCount.incrementAndGet();
+                    if(maxServerConn < 0 || connCount.get() < maxServerConn){ // if space for client conn
+                        conn.incrementAndGet(); // increase client conn
+                        connCount.incrementAndGet(); // increase server conn
                         return true;
                     }
-                    return false;
+                    return false; // no space
                 }
             }else{
-                conn.incrementAndGet();
-                return true;
+                conn.incrementAndGet(); // increase server conn
+                return true; // always space for exempt
             }
         }else{
             if(!exempt){
+                final int maxServerConn = maxConn.get();
                 synchronized(this){
-                    final int maxServerConn = maxConn.get();
-                    if(conn.get() < clientMaxConn && (maxServerConn < 0 || connCount.get() < maxServerConn)){
-                        conn.incrementAndGet();
-                        connCount.incrementAndGet();
+                    if(conn.get() < clientMaxConn && (maxServerConn < 0 || connCount.get() < maxServerConn)){ // if space for both conn
+                        conn.incrementAndGet(); // increase client conn
+                        connCount.incrementAndGet(); // increase server conn
                         return true;
                     }
-                    return false;
+                    return false; // no space
                 }
             }else{
                 final AtomicBoolean added = new AtomicBoolean(false);
                 conn.updateAndGet(operand -> {
-                   if(operand < clientMaxConn) added.set(true);
-                   return operand < clientMaxConn ? operand + 1 : operand;
+                   if(operand < clientMaxConn) added.set(true); // if space then allow addition
+                   return operand < clientMaxConn ? operand + 1 : operand; // add if space, otherwise no change
                 });
-                return added.get();
+                return added.get(); // return if space
             }
         }
     }
 
     @Override
     final void deleteConnection(final HttpExchange exchange){
-        final InetAddress address = exchange.getRemoteAddress().getAddress();
+        final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         if(connections.containsKey(address)){
-            connections.get(address).decrementAndGet();
-            if(!canIgnoreConnectionLimit(exchange))
-                connCount.decrementAndGet();
+            connections.get(address).decrementAndGet(); // decrease connection
+            if(!canIgnoreConnectionLimit(exchange)) // exempt doesn't count towards server conn
+                connCount.decrementAndGet(); // decrease server conn
         }
     }
 
@@ -104,7 +103,6 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
 
     //
 
-    @SuppressWarnings("SameReturnValue")
     public boolean canIgnoreConnectionLimit(final HttpExchange exchange){
         return false;
     }

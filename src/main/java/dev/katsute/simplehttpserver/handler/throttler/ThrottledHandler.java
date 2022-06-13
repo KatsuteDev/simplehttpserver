@@ -43,7 +43,6 @@ public class ThrottledHandler implements HttpHandler {
             }
         else
             exchange.close();
-
     }
 
 }

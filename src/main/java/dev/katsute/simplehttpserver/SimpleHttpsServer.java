@@ -27,16 +27,18 @@ public abstract class SimpleHttpsServer extends HttpsServer implements HttpServe
     SimpleHttpsServer(){ }
 
     public static SimpleHttpsServer create() throws IOException {
-        return SimpleHttpsServerImpl.createHttpsServer(null, null);
+        return new SimpleHttpsServerImpl(null, null);
     }
 
     public static SimpleHttpsServer create(final int port) throws IOException {
-        return SimpleHttpsServerImpl.createHttpsServer(port, null);
+        return new SimpleHttpsServerImpl(port, null);
     }
 
     public static SimpleHttpsServer create(final int port, final int backlog) throws IOException {
-        return SimpleHttpsServerImpl.createHttpsServer(port, backlog);
+        return new SimpleHttpsServerImpl(port, backlog);
     }
+
+    //
 
     public abstract HttpsServer getHttpsServer();
 

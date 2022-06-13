@@ -43,7 +43,7 @@ public class FileRecord extends Record {
     }
 
     public final byte[] getBytes(){
-        return Arrays.copyOf(bytes, bytes.length);
+        return Arrays.copyOf(bytes, bytes.length); // dereference
     }
 
 }

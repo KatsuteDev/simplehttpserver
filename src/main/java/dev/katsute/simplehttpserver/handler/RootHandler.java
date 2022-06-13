@@ -22,13 +22,12 @@ import com.sun.net.httpserver.HttpHandler;
 
 public class RootHandler extends PredicateHandler {
 
-    public RootHandler(final HttpHandler handlerIfTrue, final HttpHandler handlerIfFalse){
+    public RootHandler(final HttpHandler index, final HttpHandler other){
         super(
             exchange -> exchange.getRequestURI().getPath().equals("/"),
-            handlerIfTrue,
-            handlerIfFalse
+            index,
+            other
         );
     }
-
 
 }

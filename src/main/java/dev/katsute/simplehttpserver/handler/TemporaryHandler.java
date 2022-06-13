@@ -41,7 +41,7 @@ public class TemporaryHandler implements HttpHandler {
 
     @Override
     public void handle(final HttpExchange exchange) throws IOException{
-        if(expiry == null || System.currentTimeMillis() < expiry)
+        if(expiry == null || System.currentTimeMillis() < expiry) // expire on first connection or past expiry
             handler.handle(exchange);
         exchange.getHttpContext().getServer().removeContext(exchange.getHttpContext());
         exchange.close();

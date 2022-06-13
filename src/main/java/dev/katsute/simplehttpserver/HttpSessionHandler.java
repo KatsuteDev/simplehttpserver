@@ -40,12 +40,12 @@ public class HttpSessionHandler {
 
     public synchronized String assignSessionID(final HttpExchange exchange){
         String id;
-        do id = UUID.randomUUID().toString();
+        do id = UUID.randomUUID().toString(); // assign session ID
         while(sessions.containsKey(id));
         return id;
     }
 
-    private String getSetSession(final Headers headers){
+    private String getSetSession(final Headers headers){ // get session that will be set by cookie
         if(headers.containsKey("Set-Cookie"))
            for(final String value : headers.get("Set-Cookie"))
                if(value.startsWith(cookie + "="))
@@ -54,7 +54,7 @@ public class HttpSessionHandler {
     }
 
     public final HttpSession getSession(final HttpExchange exchange){
-        final String sessionId;
+        final String sessionID;
         final HttpSession session;
 
         @SuppressWarnings("SpellCheckingInspection")
@@ -70,10 +70,10 @@ public class HttpSessionHandler {
         }
 
         final String setSession = getSetSession(exchange.getResponseHeaders());
-        sessionId = setSession != null ? setSession : cookies.get(cookie);
+        sessionID = setSession != null ? setSession : cookies.get(cookie); // use session that will be written or session from cookie
 
         synchronized(this){
-            if(!sessions.containsKey(sessionId)){
+            if(!sessions.containsKey(sessionID)){
                 session = new HttpSession() {
                     private final String sessionID;
                     private final long creationTime;
@@ -117,7 +117,7 @@ public class HttpSessionHandler {
                 exchange.getResponseHeaders().add("Set-Cookie", OUT.toString());
                 sessions.put(session.getSessionID(), session);
             }else{
-                session = sessions.get(sessionId);
+                session = sessions.get(sessionID);
             }
         }
         return session;
