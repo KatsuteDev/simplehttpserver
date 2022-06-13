@@ -18,8 +18,6 @@
 
 package dev.katsute.simplehttpserver.handler.file;
 
-import dev.katsute.simplehttpserver.handler.throttler.ConnectionThrottler;
-
 import java.util.regex.Pattern;
 
 abstract class ContextUtility {

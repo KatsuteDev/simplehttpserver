@@ -2,22 +2,22 @@
     <h3>SimpleHttpServer</h3>
     <h5>A simple and efficient HTTP server for Java</h5>
     <div>
-        Documentation
+        <a href="https://docs.katsute.dev/simplehttpserver">Documentation</a>
         •
-        Setup
+        <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/setup.md#readme">Setup</a>
         •
-        FAQ
+        <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/faq.md#readme">FAQ</a>
     </div>
 </div>
 
 <br>
 
 <div align="center">
-    Maven Central
+    <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
     •
     GitHub Packages
     •
-    Release
+    <a href="https://github.com/KatsuteDev/simplehttpserver/releases">Releases</a>
 </div>
 
 <br>
@@ -66,4 +66,4 @@ Each commit automatically triggers the Java CI workflow, make sure you have acti
 
 ### 💼 License
 
-This library is released under the [GNU General Public License (GPL) v2.0](https://github.com/KatsuteDev/Mal4J/blob/main/LICENSE).
+This library is released under the [GNU General Public License (GPL) v2.0](https://github.com/KatsuteDev/simplehttpserver/blob/main/LICENSE).
