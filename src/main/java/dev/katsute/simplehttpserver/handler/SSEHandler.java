@@ -32,7 +32,7 @@ import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Send events from the server to the client using an <code>text/event-stream</code>. Events are sent using {@link #push(String)} or {@link #push(String, int, String)}.
+ * A <a href="https://www.w3schools.com/html/html5_serversentevents.asp">Server sent events (SSE)</a> handler sends events from the server to a client using an <code>text/event-stream</code>. Events are sent using {@link #push(String)} or {@link #push(String, int, String)}.
  *
  * @since 5.0.0
  * @version 5.0.0

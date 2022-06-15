@@ -20,13 +20,16 @@ package dev.katsute.simplehttpserver.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dev.katsute.simplehttpserver.SimpleHttpServer;
 
 import java.io.IOException;
 import java.util.Objects;
 
 /**
- * Handler that removes itself after a single request, or after a set time, whichever comes first.
+ * Handler that removes itself after a single request, or after a set time, whichever comes first. This can be used for single use downloads or disposable links. A random unused context can be created by using {@link SimpleHttpServer#getRandomContext()} or {@link SimpleHttpServer#getRandomContext(String)}.
  *
+ * @see SimpleHttpServer#getRandomContext()
+ * @see SimpleHttpServer#getRandomContext(String)
  * @since 5.0.0
  * @version 5.0.0
  * @author Katsute

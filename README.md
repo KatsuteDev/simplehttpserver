@@ -5,8 +5,6 @@
         <a href="https://docs.katsute.dev/simplehttpserver">Documentation</a>
         •
         <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/setup.md#readme">Setup</a>
-        •
-        <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/faq.md#readme">FAQ</a>
     </div>
 </div>
 

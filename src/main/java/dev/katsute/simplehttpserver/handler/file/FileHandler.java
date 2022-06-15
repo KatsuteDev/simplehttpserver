@@ -31,6 +31,31 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A file handler can be used to serve single or multiple files on a server with optional pre/post processing using {@link FileAdapter}s.
+ * <br>
+ * <h1>{@link FileAdapter}</h1>
+ * A {@link FileAdapter} determines where a file can be accessed and what content it will return. By default files would be accessible at the file name (including extension) with the file content.
+ *
+ * <h1>Adding Files</h1>
+ * The name parameters in the add methods supersedes the {@link FileAdapter} and makes a file accessible at whatever name you set.
+ *
+ * <h1>{@link FileOptions}</h1>
+ * File options can be added to influence the behavior of added files.
+ * <h2>Context</h2>
+ * The {@link FileOptions#context} property determines at where the file will be located with respect to the file handler. By default this is "" and any added files will be accessible directly after the file handler's context.
+ * <br>
+ * <b>Example:</b> <code>/fileHandlerContext/file.txt</code> by default and <code>/fileHandlerContext/optionsContext/file.txt</code> if a context was set.
+ * <h2>Loading Options</h2>
+ * The {@link FileOptions#loading} option determines how a file should be loaded when added.
+ * <ul>
+ *     <li>{@link FileOptions.FileLoadingOption#PRELOAD} - files are read when added</li>
+ *     <li>{@link FileOptions.FileLoadingOption#MODIFY} - files are read when added and when modified</li>
+ *     <li>{@link FileOptions.FileLoadingOption#CACHE} - files are read when requested and cached for a set time</li>
+ *     <li>{@link FileOptions.FileLoadingOption#LIVE} - files are read when requested</li>
+ * </ul>
+ * <h2>Cache</h2>
+ * If the loading option {@link FileOptions.FileLoadingOption#CACHE} is used, the {@link FileOptions#cache} determines how long to cache files for in milliseconds.
+ * <h2>Walk</h2>
+ * When directories are added, if true, will also include subdirectories; if false, will only include files in the immediate directory.
  *
  * @see FileAdapter
  * @see FileOptions
@@ -154,6 +179,8 @@ public class FileHandler implements SimpleHttpHandler {
         Objects.requireNonNull(file);
         try{
             final FileOptions opts = options == null ? defaultOptions : new FileOptions(options); // dereference to prevent modification
+            Objects.requireNonNull(opts.loading);
+            Objects.requireNonNull(opts.context);
             files.put(
                 ContextUtility.joinContexts(true, false, opts.context, fileName == null ? adapter.getName(file) : fileName),
                 new FileEntry(file, adapter, opts)
@@ -254,6 +281,8 @@ public class FileHandler implements SimpleHttpHandler {
         Objects.requireNonNull(directory);
         try{
             final FileOptions opts = options == null ? defaultOptions : new FileOptions(options); // dereference to prevent modification
+            Objects.requireNonNull(opts.loading);
+            Objects.requireNonNull(opts.context);
             final String target = ContextUtility.joinContexts(true, false, opts.context, directoryName);
             directories.put(
                 target,

@@ -18,20 +18,16 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.*;
+import com.sun.net.httpserver.HttpsServer;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
 
 /**
- * A http handler that uses a {@link SimpleHttpExchange}
- * <br>
- * Http handlers will not throw an exception in the main thread, you must use a try-catch to expose them. All requests must be closed with {@link HttpExchange#close()}, otherwise the handler will rerun the request multiple times.
- * <br>
- * This handler can be used with a standard {@link com.sun.net.httpserver.HttpsServer}.
+ * A {@link HttpsServer} with additional extensions to simplify usage. See {@link SimpleHttpServer} for setup documentation.
  *
- * @see HttpHandler
- * @see SimpleHttpExchange
+ * @see SimpleHttpServer
+ * @see HttpsServer
  * @since 5.0.0
  * @version 5.0.0
  * @author Katsute

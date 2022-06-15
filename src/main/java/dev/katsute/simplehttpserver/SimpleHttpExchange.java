@@ -28,6 +28,49 @@ import java.util.Map;
 
 /**
  * A {@link HttpExchange} with additional extensions to simplify usage.
+ * <h1>Requests</h1>
+ * <h2><code>GET</code> Request</h2>
+ * If a user sends a <code>GET</code> request to the server, a map of keys and values of that request can be retrieved by using the {@link #getGetMap()} method.
+ * <h2><code>POST</code> Request</h2>
+ * If a user sends a <code>POST</code> request to the server, a map of keys and values; or a {@link MultipartFormData} can be retrieved by using {@link #getPostMap()} and {@link #getMultipartFormData()}.
+ *
+ * <h3><code>multipart/form-data</code></h3>
+ * For requests that have content type <code>multipart/form-data</code>, data must be retrieved using {@link #getMultipartFormData()}, which returns a {@link MultipartFormData} using {@link Record}s and {@link FileRecord}s. Files sent through here are sent as a {@link Byte} array and not a {@link File}.
+ *
+ * <h2>Cookies</h2>
+ * A clients browser cookies for the site can be retrieved by using the {@link #getCookie(String)} or {@link #getCookies()} method.
+ * <br>
+ * Cookies can be set by using the {@link #setCookie(HttpCookie)} or {@link #setCookie(String, String)}.
+ * <br>
+ * An exchange must be sent in order to change on the client.
+ *
+ * <h2>Session</h2>
+ * Normally the only "identifier" that we can retrieve from the user is their address and port provided from an exchange. This however, doesn't work across multiple tabs or when the user refreshes the page; instead we use a session cookie to track a user.
+ * <br>
+ * A server must have a {@link HttpSessionHandler} set using {@link SimpleHttpServer#setSessionHandler(HttpSessionHandler)} for this to work.
+ * <br>
+ * The {@link HttpSessionHandler} assigns session IDs to clients and allows the server to retrieve them using {@link SimpleHttpServer#getSession(HttpExchange)}.
+ *
+ * <h1>Response</h1>
+ * To send response headers you must first retrieve then with {@link #getResponseHeaders()}, modify them, then send them using {@link #sendResponseHeaders(int, long)} or any other of the send methods.
+ * <br>
+ * Data can be sent as a {@link Byte} array, {@link String}, or as a {@link File}. Responses can optionally gziped to compress the data sent.
+ * <ul>
+ *      <li>{@link #send(int)}</li>
+ *      <li>{@link #send(byte[])}</li>
+ *      <li>{@link #send(byte[], int)}</li>
+ *      <li>{@link #send(byte[], boolean)}</li>
+ *      <li>{@link #send(byte[], int, boolean)}</li>
+ *      <li>{@link #send(String)}</li>
+ *      <li>{@link #send(String, int)}</li>
+ *      <li>{@link #send(String, boolean)}</li>
+ *      <li>{@link #send(String, int, boolean)}</li>
+ *      <li>{@link #send(File)}</li>
+ *      <li>{@link #send(File, int)}</li>
+ *      <li>{@link #send(File, boolean)}</li>
+ *      <li>{@link #send(File, int, boolean)}</li>
+ * </ul>
+ * <b>Note:</b> An exchange must be sent or closed, otherwise the connection may resend the request until it gets response or times out.
  *
  * @see HttpExchange
  * @since 5.0.0

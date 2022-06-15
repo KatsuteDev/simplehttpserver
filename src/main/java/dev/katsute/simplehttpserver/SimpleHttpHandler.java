@@ -24,14 +24,21 @@ import com.sun.net.httpserver.HttpHandler;
 import java.io.IOException;
 
 /**
- * A http handler that uses a {@link SimpleHttpExchange}
+ * A http handler that uses a {@link SimpleHttpExchange}. All handlers in this library can be used with a standard {@link com.sun.net.httpserver.HttpServer}.
  * <br>
- * Http handlers will not throw an exception in the main thread, you must use a try-catch to expose them. All requests must be closed with {@link HttpExchange#close()}, otherwise the handler will rerun the request multiple times.
+ * <b>Note:</b> Http handlers will not throw an exception in the main thread, you must use a try-catch to expose them.
  * <br>
- * This handler can be used with a standard {@link com.sun.net.httpserver.HttpServer}.
+ * <b>Note:</b> An exchange must be sent or closed, otherwise the connection may resend the request until it gets response or times out.
  *
  * @see HttpHandler
  * @see SimpleHttpExchange
+ * @see dev.katsute.simplehttpserver.handler.PredicateHandler
+ * @see dev.katsute.simplehttpserver.handler.RedirectHandler
+ * @see dev.katsute.simplehttpserver.handler.RootHandler
+ * @see dev.katsute.simplehttpserver.handler.SSEHandler
+ * @see dev.katsute.simplehttpserver.handler.TemporaryHandler
+ * @see dev.katsute.simplehttpserver.handler.throttler.ThrottledHandler
+ * @see dev.katsute.simplehttpserver.handler.file.FileHandler
  * @since 5.0.0
  * @version 5.0.0
  * @author Katsute

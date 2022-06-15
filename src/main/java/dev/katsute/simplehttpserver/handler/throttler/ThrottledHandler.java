@@ -25,11 +25,32 @@ import dev.katsute.simplehttpserver.SimpleHttpHandler;
 
 import java.io.IOException;
 
+/**
+ * The throttled handler limits how many simultaneous connections are allowed at any given time. Throttlers are used to determine how inbound connections are handled.
+ *
+ * @see ConnectionThrottler
+ * @see ExchangeThrottler
+ * @see ServerExchangeThrottler
+ * @see SessionThrottler
+ * @see ServerSessionThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class ThrottledHandler implements SimpleHttpHandler {
 
     private final HttpHandler handler;
     private final ConnectionThrottler throttler;
 
+    /**
+     * Creates a throttled handler.
+     *
+     * @param throttler connection throttler
+     * @param handler handler
+     *
+     * @see ConnectionThrottler
+     * @since 5.0.0
+     */
     public ThrottledHandler(final ConnectionThrottler throttler, final HttpHandler handler){
         this.handler   = handler;
         this.throttler = throttler;
@@ -48,8 +69,7 @@ public class ThrottledHandler implements SimpleHttpHandler {
             }finally{
                 throttler.deleteConnection(exchange);
             }
-        else
-            exchange.close();
+        exchange.close();
     }
 
 }

@@ -121,7 +121,7 @@ class ServerTests {
             final SimpleHttpServer server = SimpleHttpServer.create();
 
             assertThrows(NullPointerException.class, () -> server.removeContext((String) null));
-            assertThrows(IllegalArgumentException.class, () -> server.removeContext((HttpContext) null));
+            assertThrows(NullPointerException.class, () -> server.removeContext((HttpContext) null));
             assertThrows(IllegalArgumentException.class, () -> server.removeContext(""));
         }
 

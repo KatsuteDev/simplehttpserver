@@ -28,7 +28,7 @@ import java.util.Objects;
 import java.util.function.Predicate;
 
 /**
- * Handler that process requests based on a predicate.
+ * Handler that process requests based on the result of a predicate.
  *
  * @see Predicate
  * @see SimpleHttpExchange

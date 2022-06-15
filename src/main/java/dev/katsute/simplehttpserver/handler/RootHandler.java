@@ -21,7 +21,9 @@ package dev.katsute.simplehttpserver.handler;
 import com.sun.net.httpserver.HttpHandler;
 
 /**
- * Handler that process requests for the root <code>/</code> context.
+ * By default, exchanges will look for the closest matching context for their handler, this consequently means that the root index <code>/</code> would catch any requests without a handler instead of returning a code 404.
+ * <br>
+ * The RootHandler resolves this issue by only accepting requests to the exact context <code>/</code> and sending the rest to an alternative handler, typically where a 404 page would reside.
  *
  * @since 5.0.0
  * @version 5.0.0
