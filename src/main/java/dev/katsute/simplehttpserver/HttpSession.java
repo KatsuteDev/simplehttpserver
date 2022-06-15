@@ -18,16 +18,52 @@
 
 package dev.katsute.simplehttpserver;
 
+/**
+ * A session keeps track of a single client across multiple exchanges.
+ *
+ * @see HttpSessionHandler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public abstract class HttpSession {
 
     HttpSession(){ }
 
+    /**
+     * Returns the session ID.
+     *
+     * @return session ID
+     *
+     * @since 5.0.0
+     */
     public abstract String getSessionID();
 
+    /**
+     * Returns when the session was created as milliseconds since epoch.
+     *
+     * @return session creation time
+     *
+     * @since 5.0.0
+     */
     public abstract long getCreationTime();
 
+    /**
+     * Returns when the session was last accessed as milliseconds since epoch.
+     *
+     * @return session last accessed time
+     *
+     * @see #update()
+     * @since 5.0.0
+     */
     public abstract long getLastAccessed();
 
+    /**
+     * Refreshes when the session was last accessed to now.
+     *
+     * @see #getLastAccessed()
+     * @since 5.0.0
+     */
     public abstract void update();
 
 }

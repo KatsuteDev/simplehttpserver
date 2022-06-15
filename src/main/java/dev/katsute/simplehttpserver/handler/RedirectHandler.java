@@ -23,13 +23,28 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.util.Objects;
 
+/**
+ * Redirects a request to a different URL.
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class RedirectHandler implements HttpHandler {
 
     private final String link;
 
+    /**
+     * Creates a redirect to a URL.
+     *
+     * @param link URL to redirect to
+     *
+     * @since 5.0.0
+     */
     public RedirectHandler(final String link){
-        this.link = link;
+        this.link = Objects.requireNonNull(link);
     }
 
     @Override

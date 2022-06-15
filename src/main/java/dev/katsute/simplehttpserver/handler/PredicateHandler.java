@@ -20,23 +20,51 @@ package dev.katsute.simplehttpserver.handler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dev.katsute.simplehttpserver.SimpleHttpExchange;
+import dev.katsute.simplehttpserver.SimpleHttpHandler;
 
 import java.io.IOException;
+import java.util.Objects;
 import java.util.function.Predicate;
 
-public class PredicateHandler implements HttpHandler {
+/**
+ * Handler that process requests based on a predicate.
+ *
+ * @see Predicate
+ * @see SimpleHttpExchange
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
+public class PredicateHandler implements SimpleHttpHandler {
 
     private final HttpHandler T, F;
-    private final Predicate<HttpExchange> predicate;
+    private final Predicate<SimpleHttpExchange> predicate;
 
-    public PredicateHandler(final Predicate<HttpExchange> predicate, final HttpHandler handlerIfTrue, HttpHandler handlerIfFalse){
-        this.T = handlerIfTrue;
-        this.F = handlerIfFalse;
-        this.predicate = predicate;
+    /**
+     * Creates a predicate handler.
+     *
+     * @param predicate predicate
+     * @param handlerIfTrue handler to use if true
+     * @param handlerIfFalse handler to use if false
+     *
+     * @see Predicate
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
+    public PredicateHandler(final Predicate<SimpleHttpExchange> predicate, final HttpHandler handlerIfTrue, HttpHandler handlerIfFalse){
+        this.T = Objects.requireNonNull(handlerIfTrue);
+        this.F = Objects.requireNonNull(handlerIfFalse);
+        this.predicate = Objects.requireNonNull(predicate);
     }
 
     @Override
     public final void handle(final HttpExchange exchange) throws IOException{
+        SimpleHttpHandler.super.handle(exchange);
+    }
+
+    @Override
+    public final void handle(final SimpleHttpExchange exchange) throws IOException{
         (predicate.test(exchange) ? T : F).handle(exchange);
     }
 

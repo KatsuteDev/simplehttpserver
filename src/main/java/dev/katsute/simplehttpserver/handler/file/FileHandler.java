@@ -26,26 +26,38 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URLDecoder;
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
+/**
+ * A file handler can be used to serve single or multiple files on a server with optional pre/post processing using {@link FileAdapter}s.
+ *
+ * @see FileAdapter
+ * @see FileOptions
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class FileHandler implements SimpleHttpHandler {
 
     private static final FileOptions defaultOptions = new FileOptions();
 
     private static final FileAdapter defaultAdapter = new FileAdapter() {
-            @Override
-            public final byte[] getBytes(final File file, final byte[] bytes){
-                return bytes;
-            }
 
-            @Override
-            public final String getName(final File file){
-                return FileHandler.getName(file);
-            }
+        @Override
+        public final byte[] getBytes(final File file, final byte[] bytes){
+            return bytes;
+        }
+
+        @Override
+        public final String getName(final File file){
+            return FileHandler.getName(file);
+        }
+
     };
 
     private static String getName(final File file){
-        return file.getParentFile() == null ? file.getPath() : file.getName(); // fix issue with drives not having a name
+        return Objects.requireNonNull(file).getParentFile() == null ? file.getPath() : file.getName(); // fix issue with drives not having a name
     }
 
     //
@@ -57,29 +69,89 @@ public class FileHandler implements SimpleHttpHandler {
 
     //
 
+    /**
+     * Creates a file handler.
+     *
+     * @since 5.0.0
+     */
     public FileHandler(){
         this(defaultAdapter);
     }
 
+    /**
+     * Creates a file handler, adapting the added files with an {@link FileAdapter}.
+     *
+     * @param adapter file adapter
+     *
+     * @see FileAdapter
+     * @since 5.0.0
+     */
     public FileHandler(final FileAdapter adapter){
-        this.adapter = adapter;
+        this.adapter = Objects.requireNonNull(adapter);
     }
 
     //
 
+    /**
+     * Adds a file to the handler.
+     *
+     * @param file file to add
+     *
+     * @see #addFile(File, FileOptions)
+     * @see #addFile(File, String)
+     * @see #addFile(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addFile(final File file){
         addFile(file, adapter.getName(file), null);
     }
 
+    /**
+     * Adds a file to the handler from a set of {@link FileOptions}s.
+     *
+     * @param file file to add
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #addFile(File)
+     * @see #addFile(File, String)
+     * @see #addFile(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addFile(final File file, final FileOptions options){
         addFile(file, adapter.getName(file), options);
     }
 
+    /**
+     * Adds a file to the handler with a set name. Ignores the {@link FileAdapter} if set.
+     *
+     * @param file file to add
+     * @param fileName file name to use
+     *
+     * @see #addFile(File)
+     * @see #addFile(File, FileOptions)
+     * @see #addFile(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addFile(final File file, final String fileName){
         addFile(file, fileName, null);
     }
 
+    /**
+     * Adds a file to the handler with a set name from a set of {@link FileOptions}. Ignores the {@link FileAdapter} if set.
+     *
+     * @param file file to add
+     * @param options file options
+     * @param fileName file name to use
+     *
+     * @see FileOptions
+     * @see #addFile(File)
+     * @see #addFile(File, FileOptions)
+     * @see #addFile(File, String)
+     * @since 5.0.0
+     */
     public final void addFile(final File file, final String fileName, final FileOptions options){
+        Objects.requireNonNull(file);
         try{
             final FileOptions opts = options == null ? defaultOptions : new FileOptions(options); // dereference to prevent modification
             files.put(
@@ -91,30 +163,95 @@ public class FileHandler implements SimpleHttpHandler {
 
     //
 
+    /**
+     * Adds multiple files to the handler.
+     *
+     * @param files files to add
+     *
+     * @see #addFiles(File[], FileOptions)
+     * @since 5.0.0
+     */
     public final void addFiles(final File[] files){
         addFiles(files, null);
     }
 
+    /**
+     * Adds multiple files to the handler from a set of {@link FileOptions}.
+     *
+     * @param files files to add
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #addFiles(File[], FileOptions)
+     * @since 5.0.0
+     */
     public final void addFiles(final File[] files, final FileOptions options){
-        for(final File file : files)
+        for(final File file : Objects.requireNonNull(files))
             addFile(file, options);
     }
 
     //
 
+    /**
+     * Adds a directory to the handler using the directory name.
+     *
+     * @param directory directory to add
+     *
+     * @see #addDirectory(File, FileOptions)
+     * @see #addDirectory(File, String)
+     * @see #addDirectory(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addDirectory(final File directory){
         addDirectory(directory, getName(directory), null);
     }
 
+     /**
+     * Adds a directory to the handler using the directory name from a set of file options.
+     *
+     * @param directory directory to add
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #addDirectory(File)
+     * @see #addDirectory(File, String)
+     * @see #addDirectory(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addDirectory(final File directory, final FileOptions options){
         addDirectory(directory, getName(directory), options);
     }
 
+     /**
+     * Adds a directory to the handler with a set name.
+     *
+     * @param directory directory to add
+     * @param directoryName directory name to use
+     *
+     * @see #addDirectory(File)
+     * @see #addDirectory(File, FileOptions)
+     * @see #addDirectory(File, String, FileOptions)
+     * @since 5.0.0
+     */
     public final void addDirectory(final File directory, final String directoryName){
         addDirectory(directory, directoryName, null);
     }
 
+    /**
+     * Adds a directory to the handler using the directory name from a set of file options.
+     *
+     * @param directory directory to add
+     * @param directoryName directory name to use
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #addDirectory(File)
+     * @see #addDirectory(File, FileOptions)
+     * @see #addDirectory(File, String)
+     * @since 5.0.0
+     */
     public final void addDirectory(final File directory, final String directoryName, final FileOptions options){
+        Objects.requireNonNull(directory);
         try{
             final FileOptions opts = options == null ? defaultOptions : new FileOptions(options); // dereference to prevent modification
             final String target = ContextUtility.joinContexts(true, false, opts.context, directoryName);
@@ -127,28 +264,86 @@ public class FileHandler implements SimpleHttpHandler {
 
     //
 
+    /**
+     * Removes a file from the handler at the specified context.
+     *
+     * @param context context
+     *
+     * @see #removeFile(File)
+     * @see #removeFile(File, FileOptions)
+     * @since 5.0.0
+     */
     public final void removeFile(final String context){
-        files.remove(ContextUtility.getContext(context, true, false));
+        files.remove(ContextUtility.getContext(Objects.requireNonNull(context), true, false));
     }
 
+    /**
+     * Removes a file from the handler.
+     *
+     * @param file file to remove
+     *
+     * @see #removeFile(String)
+     * @see #removeFile(File, FileOptions)
+     * @since 5.0.0
+     */
     public final void removeFile(final File file){
-        removeFile(adapter.getName(file));
+        removeFile(adapter.getName(Objects.requireNonNull(file)));
     }
 
+    /**
+     * Removes a file from the handler with file options. Only required if {@link FileOptions#context} was used.
+     *
+     * @param file file to remove
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #removeFile(String)
+     * @see #removeFile(File)
+     * @since 5.0.0
+     */
     public final void removeFile(final File file, final FileOptions options){
-        removeFile(ContextUtility.joinContexts(true, false, options.context, adapter.getName(file)));
+        removeFile(ContextUtility.joinContexts(true, false, options.context, adapter.getName(Objects.requireNonNull(file))));
     }
 
+    /**
+     * Removes a directory from the handler at a specified context.
+     *
+     * @param context context
+     *
+     * @see #removeDirectory(File)
+     * @see #removeDirectory(File, FileOptions)
+     * @since 5.0.0
+     */
     public final void removeDirectory(final String context){
-        directories.remove(ContextUtility.getContext(context, true, false));
+        directories.remove(ContextUtility.getContext(Objects.requireNonNull(context), true, false));
     }
 
+    /**
+     * Removes a directory from the handler.
+     *
+     * @param directory directory to remove
+     *
+     * @see #removeDirectory(String)
+     * @see #removeDirectory(File, FileOptions)
+     * @since 5.0.0
+     */
     public final void removeDirectory(final File directory){
         removeDirectory(getName(directory));
     }
 
-    public final void removeDirectory(final String context, final File directory){
-       removeDirectory(ContextUtility.joinContexts(true, false, context, getName(directory)));
+    /**
+     * Removes a directory from the handler with file options. Only required if {@link FileOptions#context} was used.
+     *
+     * @param directory directory to remove
+     * @param options file options
+     *
+     * @see FileOptions
+     * @see #removeDirectory(String)
+     * @see #removeDirectory(File)
+     * @since 5.0.0
+     */
+    public final void removeDirectory(final File directory, final FileOptions options){
+       removeDirectory(ContextUtility.joinContexts(true, false, options.context, getName(directory)));
     }
 
     //
@@ -203,6 +398,17 @@ public class FileHandler implements SimpleHttpHandler {
         SimpleHttpHandler.super.handle(exchange);
     }
 
+    /**
+     * Handles a file exchange. The file bytes are the bytes after post processing if {@link FileAdapter} is used.
+     *
+     * @param exchange http exchange
+     * @param source file source
+     * @param bytes file bytes
+     *
+     * @throws IOException IO exception
+     *
+     * @since 5.0.0
+     */
     public void handle(final SimpleHttpExchange exchange, final File source, final byte[] bytes) throws IOException {
         exchange.send(bytes, HttpURLConnection.HTTP_OK);
     }

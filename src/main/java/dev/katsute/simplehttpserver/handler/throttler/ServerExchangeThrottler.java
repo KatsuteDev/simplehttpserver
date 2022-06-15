@@ -18,7 +18,7 @@
 
 package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpExchange;
+import dev.katsute.simplehttpserver.SimpleHttpExchange;
 
 import java.net.InetAddress;
 import java.util.Map;
@@ -26,6 +26,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A throttler that limits the amount of simultaneous connections based on individual and total exchanges.
+ *
+ * @see ConnectionThrottler
+ * @see ExchangeThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class ServerExchangeThrottler extends ConnectionThrottler {
 
     private final Map<InetAddress,AtomicInteger> connections = new ConcurrentHashMap<>();
@@ -33,14 +42,26 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
     private final AtomicInteger connCount = new AtomicInteger(0);
     private final AtomicInteger maxConn = new AtomicInteger(-1);
 
+    /**
+     * Creates a throttler with no total connection limit.
+     *
+     * @since 5.0.0
+     */
     public ServerExchangeThrottler(){ }
 
+    /**
+     * Creates a throttler with a limit on max total connections.
+     *
+     * @param maxConnections max total connections
+     *
+     * @since 5.0.0
+     */
     public ServerExchangeThrottler(final int maxConnections){
         maxConn.set(maxConnections);
     }
 
     @Override
-    final boolean addConnection(final HttpExchange exchange){
+    final boolean addConnection(final SimpleHttpExchange exchange){
         final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         final int clientMaxConn = getMaxConnections(exchange); // max allowed for this address
 
@@ -87,7 +108,7 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
     }
 
     @Override
-    final void deleteConnection(final HttpExchange exchange){
+    final void deleteConnection(final SimpleHttpExchange exchange){
         final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         if(connections.containsKey(address)){
             connections.get(address).decrementAndGet(); // decrease connection
@@ -97,20 +118,45 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
     }
 
     @Override
-    public int getMaxConnections(final HttpExchange exchange){
+    public int getMaxConnections(final SimpleHttpExchange exchange){
         return -1;
     }
 
     //
 
-    public boolean canIgnoreConnectionLimit(final HttpExchange exchange){
+    /**
+     * If true, an exchange does not contribute to the total server connections and can bypass the maximum limit. Still limited by {@link #getMaxConnections(SimpleHttpExchange)}.
+     *
+     * @param exchange exchange
+     * @return if exchange can bypass limit
+     *
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
+    public boolean canIgnoreConnectionLimit(final SimpleHttpExchange exchange){
         return false;
     }
 
+    /**
+     * Sets the maximum amount of server connections that is allowed.
+     *
+     * @param connections max connections
+     *
+     * @see #getMaxServerConnections()
+     * @since 5.0.0
+     */
     public synchronized final void setMaxServerConnections(final int connections){
         maxConn.set(connections);
     }
 
+    /**
+     * Returns the maximum amount of server connections that is allowed.
+     *
+     * @return max connections
+     *
+     * @see #setMaxServerConnections(int)
+     * @since 5.0.0
+     */
     public synchronized final int getMaxServerConnections(){
         return maxConn.get();
     }

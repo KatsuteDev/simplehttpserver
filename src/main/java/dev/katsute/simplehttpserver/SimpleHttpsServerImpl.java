@@ -91,7 +91,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
     }
 
     private synchronized void bind(final InetSocketAddress address, final Integer backlog) throws IOException {
-        server.bind(address, backlog == null ? 0 : backlog);
+        server.bind(Objects.requireNonNull(address), backlog == null ? 0 : backlog);
     }
 
     //
@@ -128,7 +128,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     @Override
     public final HttpSession getSession(final HttpExchange exchange){
-        return sessionHandler != null ? sessionHandler.getSession(exchange instanceof SimpleHttpExchange ? ((SimpleHttpExchange) exchange).getHttpExchange() : exchange) : null;
+        return sessionHandler != null ? sessionHandler.getSession(Objects.requireNonNull(exchange) instanceof SimpleHttpExchange ? ((SimpleHttpExchange) exchange).getHttpExchange() : exchange) : null;
     }
 
     //
@@ -142,8 +142,8 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     @Override
     public synchronized final HttpContext createContext(final String context, final HttpHandler handler){
-        final String ct = ContextUtility.getContext(context, true, false);
-        if(!ct.equals("/") && handler instanceof RootHandler)
+        final String ct = ContextUtility.getContext(Objects.requireNonNull(context), true, false);
+        if(!ct.equals("/") && Objects.requireNonNull(handler) instanceof RootHandler)
             throw new IllegalArgumentException("RootHandler can only be used at the root '/' context");
 
 
@@ -168,7 +168,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
     @Override
     public synchronized final void removeContext(final String context){
         try{
-            server.removeContext(ContextUtility.getContext(context, true, false));
+            server.removeContext(ContextUtility.getContext(Objects.requireNonNull(context), true, false));
         }catch(final IllegalArgumentException e){
             throw e;
         }finally{
@@ -183,6 +183,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     @Override
     public synchronized final void removeContext(final HttpContext context){
+        Objects.requireNonNull(context);
         contexts.remove(context);
         server.removeContext(context);
     }
@@ -191,6 +192,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     @Override
     public final HttpHandler getContextHandler(final String context){
+        Objects.requireNonNull(context);
         for(final Map.Entry<HttpContext,HttpHandler> entry : contexts.entrySet())
             if(entry.getKey().getPath().equals(ContextUtility.getContext(context, true, false)))
                 return entry.getValue();
@@ -199,7 +201,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
     @Override
     public final HttpHandler getContextHandler(final HttpContext context){
-        return contexts.get(context);
+        return contexts.get(Objects.requireNonNull(context));
     }
 
     @Override
@@ -218,7 +220,7 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
     public synchronized final String getRandomContext(final String context){
         String targetContext;
 
-        final String head = context.isEmpty() ? "" : ContextUtility.getContext(context, true, false);
+        final String head = Objects.requireNonNull(context).isEmpty() ? "" : ContextUtility.getContext(context, true, false);
 
         do targetContext = head + ContextUtility.getContext(UUID.randomUUID().toString(), true, false);
             while(getContextHandler(targetContext) != null);

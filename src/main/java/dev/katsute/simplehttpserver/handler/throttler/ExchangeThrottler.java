@@ -18,7 +18,7 @@
 
 package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpExchange;
+import dev.katsute.simplehttpserver.SimpleHttpExchange;
 
 import java.net.InetAddress;
 import java.util.Map;
@@ -26,14 +26,28 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A throttler that limits the amount of simultaneous connections based on the exchange.
+ *
+ * @see ConnectionThrottler
+ * @see ServerExchangeThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class ExchangeThrottler extends ConnectionThrottler {
 
+    /**
+     * Creates a throttler.
+     *
+     * @since 5.0.0
+     */
     public ExchangeThrottler(){ }
 
     private final Map<InetAddress,AtomicInteger> connections = new ConcurrentHashMap<>();
 
     @Override
-    final boolean addConnection(final HttpExchange exchange){
+    final boolean addConnection(final SimpleHttpExchange exchange){
         final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         final int maxConn = getMaxConnections(exchange); // max allowed for this address
 
@@ -55,15 +69,15 @@ public class ExchangeThrottler extends ConnectionThrottler {
     }
 
     @Override
-    final void deleteConnection(final HttpExchange exchange){
+    final void deleteConnection(final SimpleHttpExchange exchange){
         final InetAddress address = exchange.getRemoteAddress().getAddress(); // public address
         if(connections.containsKey(address))
             connections.get(address).decrementAndGet(); // decrease connections
     }
 
     @Override
-    public int getMaxConnections(final HttpExchange exchange){
-        return -1;
+    public int getMaxConnections(final SimpleHttpExchange exchange){
+        return 0;
     }
 
 }

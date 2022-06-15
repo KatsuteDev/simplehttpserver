@@ -18,28 +18,91 @@
 
 package dev.katsute.simplehttpserver;
 
-import com.sun.net.httpserver.HttpsServer;
+import com.sun.net.httpserver.*;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
+/**
+ * A http handler that uses a {@link SimpleHttpExchange}
+ * <br>
+ * Http handlers will not throw an exception in the main thread, you must use a try-catch to expose them. All requests must be closed with {@link HttpExchange#close()}, otherwise the handler will rerun the request multiple times.
+ * <br>
+ * This handler can be used with a standard {@link com.sun.net.httpserver.HttpsServer}.
+ *
+ * @see HttpHandler
+ * @see SimpleHttpExchange
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public abstract class SimpleHttpsServer extends HttpsServer implements HttpServerExtensions {
 
     SimpleHttpsServer(){ }
 
+    /**
+     * Creates an unbounded https server.
+     *
+     * @return http server
+     * @throws IOException IO exception
+     *
+     * @see #create(int)
+     * @see #create(int, int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpsServer create() throws IOException {
         return new SimpleHttpsServerImpl(null, null);
     }
 
+    /**
+     * Creates an https server bounded to a port.
+     *
+     * @param port to bind to
+     * @return http server
+     * @throws IOException IO exception
+     * @throws java.net.BindException if server could not be bounded
+     *
+     * @see #create()
+     * @see #create(int, int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpsServer create(final int port) throws IOException {
         return new SimpleHttpsServerImpl(port, null);
     }
 
+    /**
+     * Creates an https server bounded to a port.
+     *
+     * @param port to bind to
+     * @param backlog maximum amount of inbound connections at any given time
+     * @return http server
+     * @throws IOException IO exception
+     * @throws java.net.BindException if server could not be bounded
+     *
+     * @see #create()
+     * @see #create(int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpsServer create(final int port, final int backlog) throws IOException {
         return new SimpleHttpsServerImpl(port, backlog);
     }
 
     //
 
+    /**
+     * Returns the underlying http server.
+     *
+     * @return http server
+     *
+     * @see HttpsServer
+     * @since 5.0.0
+     */
     public abstract HttpsServer getHttpsServer();
 
 }

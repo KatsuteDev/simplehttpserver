@@ -72,7 +72,7 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
 
     @SuppressWarnings("unchecked")
     SimpleHttpExchangeImpl(final HttpExchange exchange){
-        this.exchange = exchange;
+        this.exchange = Objects.requireNonNull(exchange);
 
         rawGet = exchange.getRequestURI().getRawQuery();
         getMap = rawGet == null ? new HashMap<>() : parseWwwFormEnc(rawGet);
@@ -280,18 +280,23 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
     //
 
     @Override
+    public final String getCookie(final String cookie){
+        return cookies.get(Objects.requireNonNull(cookie));
+    }
+
+    @Override
     public final Map<String,String> getCookies(){
         return new HashMap<>(cookies);
     }
 
     @Override
     public synchronized final void setCookie(final String key, final String value){
-        setCookie(new HttpCookie(key, value));
+        setCookie(new HttpCookie(Objects.requireNonNull(key), Objects.requireNonNull(value)));
     }
 
     @Override
     public synchronized final void setCookie(final HttpCookie cookie){
-        exchange.getResponseHeaders().add("Set-Cookie", cookie.toString());
+        exchange.getResponseHeaders().add("Set-Cookie", Objects.requireNonNull(cookie).toString());
     }
 
     //
@@ -346,7 +351,7 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
             exchange.getResponseHeaders().set("Connection","keep-alive");
             sendResponseHeaders(responseCode, 0);
             try(GZIPOutputStream OUT = new GZIPOutputStream(exchange.getResponseBody())){
-                OUT.write(response);
+                OUT.write(Objects.requireNonNull(response));
                 OUT.finish();
                 OUT.flush();
             }
@@ -361,42 +366,42 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
 
     @Override
     public synchronized final void send(final String response) throws IOException {
-        send(response.getBytes(StandardCharsets.UTF_8), HttpURLConnection.HTTP_OK, false);
+        send(response, HttpURLConnection.HTTP_OK, false);
     }
 
     @Override
     public final void send(final String response, final boolean gzip) throws IOException {
-        send(response.getBytes(StandardCharsets.UTF_8), HttpURLConnection.HTTP_OK, gzip);
+        send(response, HttpURLConnection.HTTP_OK, gzip);
     }
 
     @Override
     public synchronized final void send(final String response, final int responseCode) throws IOException {
-        send(response.getBytes(StandardCharsets.UTF_8), responseCode, false);
+        send(response, responseCode, false);
     }
 
     @Override
     public final void send(final String response, final int responseCode, final boolean gzip) throws IOException {
-        send(response.getBytes(StandardCharsets.UTF_8), responseCode, gzip);
+        send(Objects.requireNonNull(response).getBytes(StandardCharsets.UTF_8), responseCode, gzip);
     }
 
     @Override
     public final void send(final File file) throws IOException {
-        send(Files.readAllBytes(file.toPath()));
+        send(file, HttpURLConnection.HTTP_OK, false);
     }
 
     @Override
     public final void send(final File file, final boolean gzip) throws IOException {
-        send(Files.readAllBytes(file.toPath()), true);
+        send(file, HttpURLConnection.HTTP_OK, true);
     }
 
     @Override
     public final void send(final File file, final int responseCode) throws IOException {
-        send(Files.readAllBytes(file.toPath()), responseCode);
+        send(file, responseCode, false);
     }
 
     @Override
     public final void send(final File file, final int responseCode, final boolean gzip) throws IOException {
-        send(Files.readAllBytes(file.toPath()), responseCode, gzip);
+        send(Files.readAllBytes(Objects.requireNonNull(file).toPath()), responseCode, gzip);
     }
 
     //

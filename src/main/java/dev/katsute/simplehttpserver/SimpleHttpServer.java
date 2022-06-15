@@ -21,25 +21,83 @@ package dev.katsute.simplehttpserver;
 import com.sun.net.httpserver.HttpServer;
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 
+/**
+ * A {@link HttpServer} with additional extensions to simplify usage.
+ *
+ * @see HttpServer
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public abstract class SimpleHttpServer extends HttpServer implements HttpServerExtensions {
 
     SimpleHttpServer(){ }
 
+    /**
+     * Creates an unbounded http server.
+     *
+     * @return http server
+     * @throws IOException IO exception
+     *
+     * @see #create(int)
+     * @see #create(int, int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpServer create() throws IOException {
         return new SimpleHttpServerImpl(null, null);
     }
 
+    /**
+     * Creates an http server bounded to a port.
+     *
+     * @param port to bind to
+     * @return http server
+     * @throws IOException IO exception
+     * @throws java.net.BindException if server could not be bounded
+     *
+     * @see #create()
+     * @see #create(int, int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpServer create(final int port) throws IOException {
         return new SimpleHttpServerImpl(port, null);
     }
 
+    /**
+     * Creates an http server bounded to a port.
+     *
+     * @param port to bind to
+     * @param backlog maximum amount of inbound connections at any given time
+     * @return http server
+     * @throws IOException IO exception
+     * @throws java.net.BindException if server could not be bounded
+     *
+     * @see #create()
+     * @see #create(int)
+     * @see #create(InetSocketAddress, int)
+     * @since 5.0.0
+     * @author Katsute
+     */
     public static SimpleHttpServer create(final int port, final int backlog) throws IOException {
         return new SimpleHttpServerImpl(port, backlog);
     }
 
     //
 
+    /**
+     * Returns the underlying http server.
+     *
+     * @return http server
+     *
+     * @see HttpServer
+     * @since 5.0.0
+     */
     public abstract HttpServer getHttpServer();
 
 }

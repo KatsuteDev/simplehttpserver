@@ -24,20 +24,48 @@ import com.sun.net.httpserver.HttpExchange;
 import java.net.HttpCookie;
 import java.util.*;
 
+/**
+ * The session handler is used to assign sessions to exchanges.
+ *
+ * @see HttpSession
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class HttpSessionHandler {
 
     private final Map<String,HttpSession> sessions = Collections.synchronizedMap(new HashMap<>());
 
     private final String cookie;
 
+    /**
+     * Creates a session handler using the cookie <code>__session-id</code>.
+     *
+     * @since 5.0.0
+     */
     public HttpSessionHandler(){
         this("__session-id");
     }
 
+    /**
+     * Creates a session handler using a specified cookie.
+     *
+     * @param cookie cookie to use for session ID
+     *
+     * @since 5.0.0
+     */
     public HttpSessionHandler(final String cookie){
-        this.cookie = cookie;
+        this.cookie = Objects.requireNonNull(cookie);
     }
 
+    /**
+     * Assigns a unique session ID to an exchange.
+     *
+     * @param exchange http exchange
+     * @return unique session ID
+     *
+     * @since 5.0.0
+     */
     public synchronized String assignSessionID(final HttpExchange exchange){
         String id;
         do id = UUID.randomUUID().toString(); // assign session ID
@@ -53,12 +81,20 @@ public class HttpSessionHandler {
        return null;
     }
 
+    /**
+     * Returns the session associated with a particular exchange.
+     *
+     * @param exchange http exchange
+     * @return session associated with exchange
+     *
+     * @since 5.0.0
+     */
     public final HttpSession getSession(final HttpExchange exchange){
         final String sessionID;
         final HttpSession session;
 
         @SuppressWarnings("SpellCheckingInspection")
-        final String rcookies = exchange.getRequestHeaders().getFirst("Cookie");
+        final String rcookies = Objects.requireNonNull(exchange).getRequestHeaders().getFirst("Cookie");
         final Map<String,String> cookies = new HashMap<>();
 
         if(rcookies != null && !rcookies.isEmpty()){

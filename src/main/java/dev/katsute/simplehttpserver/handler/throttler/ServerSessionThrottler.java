@@ -18,15 +18,24 @@
 
 package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpExchange;
-import dev.katsute.simplehttpserver.HttpSession;
-import dev.katsute.simplehttpserver.HttpSessionHandler;
+import dev.katsute.simplehttpserver.*;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A throttler that limits the amount of simultaneous connections based on individual and total sessions.
+ *
+ * @see ConnectionThrottler
+ * @see HttpSession
+ * @see SessionThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class ServerSessionThrottler extends ConnectionThrottler {
 
     private final HttpSessionHandler sessionHandler;
@@ -35,17 +44,34 @@ public class ServerSessionThrottler extends ConnectionThrottler {
     private final AtomicInteger connCount = new AtomicInteger(0);
     private final AtomicInteger maxConn = new AtomicInteger(-1);
 
+    /**
+     * Creates a throttler with no total connection limit.
+     *
+     * @param sessionHandler session handler
+     *
+     * @see HttpSessionHandler
+     * @since 5.0.0
+     */
     public ServerSessionThrottler(final HttpSessionHandler sessionHandler){
-        this.sessionHandler = sessionHandler;
+        this(sessionHandler, -1);
     }
 
+    /**
+     * Creates a throttler with a limit on max total connections.
+     *
+     * @param sessionHandler session handler
+     * @param maxConnections max total connections
+     *
+     * @see HttpSessionHandler
+     * @since 5.0.0
+     */
     public ServerSessionThrottler(final HttpSessionHandler sessionHandler, final int maxConnections){
-        this.sessionHandler = sessionHandler;
+        this.sessionHandler = Objects.requireNonNull(sessionHandler);
         maxConn.set(maxConnections);
     }
 
     @Override
-    final boolean addConnection(final HttpExchange exchange){
+    final boolean addConnection(final SimpleHttpExchange exchange){
         final HttpSession session = sessionHandler.getSession(exchange); // session
         final int sessionMaxConn = getMaxConnections(session, exchange); // max allowed for this session
 
@@ -92,7 +118,7 @@ public class ServerSessionThrottler extends ConnectionThrottler {
     }
 
     @Override
-    final void deleteConnection(final HttpExchange exchange){
+    final void deleteConnection(final SimpleHttpExchange exchange){
         final HttpSession session = sessionHandler.getSession(exchange); // session
         if(connections.containsKey(session)){
             connections.get(session).decrementAndGet(); // decrease connection
@@ -102,23 +128,61 @@ public class ServerSessionThrottler extends ConnectionThrottler {
     }
 
     @Override
-    public final int getMaxConnections(final HttpExchange exchange){
+    public final int getMaxConnections(final SimpleHttpExchange exchange){
         return getMaxConnections(sessionHandler.getSession(exchange), exchange);
     }
 
-    public int getMaxConnections(final HttpSession session, final HttpExchange exchange){
+    /**
+     * Returns the maximum number of connections allowed for a session. Return <code>-1</code> for unlimited connections.
+     *
+     * @param session session
+     * @param exchange exchange
+     * @return maximum connections
+     *
+     * @see HttpSession
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
+    public int getMaxConnections(final HttpSession session, final SimpleHttpExchange exchange){
         return -1;
     }
 
+    /**
+     * If true, a session does not contribute to the total server connections and can bypass the maximum limit. Still limited by {@link #getMaxConnections(SimpleHttpExchange)}.
+     *
+     * @param session session
+     * @param exchange exchange
+     * @return if exchange can bypass limit
+     *
+     * @see HttpSession
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
     @SuppressWarnings("SameReturnValue")
-    public boolean canIgnoreConnectionLimit(final HttpSession session, final HttpExchange exchange){
+    public boolean canIgnoreConnectionLimit(final HttpSession session, final SimpleHttpExchange exchange){
         return false;
     }
 
+    /**
+     * Sets the maximum amount of server connections that is allowed.
+     *
+     * @param connections max connections
+     *
+     * @see #getMaxServerConnections()
+     * @since 5.0.0
+     */
     public synchronized final void setMaxServerConnections(final int connections){
         maxConn.set(connections);
     }
 
+    /**
+     * Returns the maximum amount of server connections that is allowed.
+     *
+     * @return max connections
+     *
+     * @see #setMaxServerConnections(int)
+     * @since 5.0.0
+     */
     public synchronized final int getMaxServerConnections(){
         return maxConn.get();
     }

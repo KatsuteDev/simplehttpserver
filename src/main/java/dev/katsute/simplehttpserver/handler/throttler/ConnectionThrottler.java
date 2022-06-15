@@ -18,16 +18,37 @@
 
 package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpExchange;
+import dev.katsute.simplehttpserver.SimpleHttpExchange;
 
-public abstract class ConnectionThrottler {
+/**
+ * Determines how connections are handled by the {@link ThrottledHandler}.
+ *
+ * @see ThrottledHandler
+ * @see ExchangeThrottler
+ * @see ServerExchangeThrottler
+ * @see SessionThrottler
+ * @see ServerSessionThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
+abstract class ConnectionThrottler {
 
     ConnectionThrottler(){ }
 
-    abstract boolean addConnection(final HttpExchange exchange);
+    abstract boolean addConnection(final SimpleHttpExchange exchange);
 
-    abstract void deleteConnection(final HttpExchange exchange);
+    abstract void deleteConnection(final SimpleHttpExchange exchange);
 
-    public abstract int getMaxConnections(final HttpExchange exchange);
+    /**
+     * Returns the maximum number of connections allowed for an exchange. Return <code>-1</code> for unlimited connections.
+     *
+     * @param exchange exchange
+     * @return maximum connections
+     *
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
+    public abstract int getMaxConnections(final SimpleHttpExchange exchange);
 
 }

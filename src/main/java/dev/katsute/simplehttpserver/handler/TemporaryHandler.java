@@ -22,25 +22,48 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
+import java.util.Objects;
 
+/**
+ * Handler that removes itself after a single request, or after a set time, whichever comes first.
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class TemporaryHandler implements HttpHandler {
 
     private final HttpHandler handler;
 
     private final Long expiry;
 
+    /**
+     * Creates a temporary handler that removes itself after the first request.
+     *
+     * @param handler handler
+     *
+     * @since 5.0.0
+     */
     public TemporaryHandler(final HttpHandler handler){
-        this.handler = handler;
+        this.handler = Objects.requireNonNull(handler);
         this.expiry  = null;
     }
 
+    /**
+     * Creates a temporary handler that removes itself after the first request, or after a set time.
+     *
+     * @param handler handler
+     * @param maxTime how long the handler should exists for in milliseconds
+     *
+     * @since 5.0.0
+     */
     public TemporaryHandler(final HttpHandler handler, final long maxTime){
-        this.handler = handler;
+        this.handler = Objects.requireNonNull(handler);
         this.expiry  = System.currentTimeMillis() + maxTime;
     }
 
     @Override
-    public void handle(final HttpExchange exchange) throws IOException{
+    public synchronized final void handle(final HttpExchange exchange) throws IOException{
         if(expiry == null || System.currentTimeMillis() < expiry) // expire on first connection or past expiry
             handler.handle(exchange);
         exchange.getHttpContext().getServer().removeContext(exchange.getHttpContext());

@@ -31,11 +31,25 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * Send events from the server to the client using an <code>text/event-stream</code>. Events are sent using {@link #push(String)} or {@link #push(String, int, String)}.
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class SSEHandler implements SimpleHttpHandler {
 
     private final List<OutputStream> listeners  = new ArrayList<>();
     private final AtomicInteger eventID         = new AtomicInteger(-1);
     private final List<EventStreamRecord> queue = new ArrayList<>();
+
+    /**
+     * Creates a SSE handler.
+     *
+     * @since 5.0.0
+     */
+    public SSEHandler(){ }
 
     @Override
     public final void handle(final HttpExchange exchange) throws IOException{
@@ -74,10 +88,28 @@ public class SSEHandler implements SimpleHttpHandler {
         listeners.add(exchange.getResponseBody()); // track events
     }
 
+    /**
+     * Pushes an event to the stream.
+     *
+     * @param data data to send
+     *
+     * @see #push(String, int, String)
+     * @since 5.0.0
+     */
     public synchronized final void push(final String data){
         push(data, 0, "");
     }
 
+    /**
+     * Pushes an event to the stream
+     *
+     * @param data data to send
+     * @param retry how long to retry for
+     * @param event event type
+     *
+     * @see #push(String)
+     * @since 5.0.0
+     */
     public synchronized final void push(final String data, final int retry, final String event){
         eventID.addAndGet(1);
         final EventStreamRecord record = new EventStreamRecord(retry, event, data);
@@ -98,13 +130,13 @@ public class SSEHandler implements SimpleHttpHandler {
         private final String event;
         private final String data;
 
-        public EventStreamRecord(final int retry, final String event, final String data){
+        private EventStreamRecord(final int retry, final String event, final String data){
             this.retry = retry;
             this.event = event;
             this.data  = data;
         }
 
-        public final String toString(final int id){
+        private String toString(final int id){
             return
                 "id: " + id + '\n' +
                 (retry > 0 ? "retry: " + retry + '\n' : "") +

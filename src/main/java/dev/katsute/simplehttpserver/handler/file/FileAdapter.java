@@ -19,13 +19,41 @@
 package dev.katsute.simplehttpserver.handler.file;
 
 import java.io.File;
+import java.util.Objects;
 
+/**
+ * When using a {@link FileHandler}, determines at what name a file should be located at, and what content to return to the client.
+ *
+ * @see FileHandler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public interface FileAdapter {
 
+    /**
+     * Returns the name that the file should be accessible at. By default this returns the file name.
+     * <br>
+     * Not used for directories.
+     *
+     * @param file file
+     * @return file name
+     *
+     * @since 5.0.0
+     */
     default String getName(final File file){
-        return file.getName();
+        return Objects.requireNonNull(file).getName();
     }
 
+    /**
+     * Returns the bytes that the file should return. By default this returns the files content in bytes.
+     *
+     * @param file file
+     * @param bytes file content in bytes
+     * @return byte array
+     *
+     * @since 5.0.0
+     */
     default byte[] getBytes(final File file, final byte[] bytes){
         return bytes;
     }

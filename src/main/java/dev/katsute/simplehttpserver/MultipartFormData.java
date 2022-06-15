@@ -18,9 +18,18 @@
 
 package dev.katsute.simplehttpserver;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
+/**
+ * Representation of a multipart/form-data body.
+ *
+ * @see FileRecord
+ * @see Record
+ * @see SimpleHttpExchange#getMultipartFormData()
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class MultipartFormData {
 
     private final Map<String,Record> data;
@@ -29,10 +38,31 @@ public class MultipartFormData {
         this.data = new HashMap<>(data);
     }
 
+    /**
+     * Returns the record for a particular key. If the record is supposed to be a file use {@link Record#asFile()}.
+     *
+     * @param name record key
+     * @return record
+     *
+     * @see Record
+     * @see FileRecord
+     * @see #getEntries()
+     * @since 5.0.0
+     */
     public final Record getEntry(final String name){
-        return data.get(name);
+        return data.get(Objects.requireNonNull(name));
     }
 
+    /**
+     * Returns all the records in the response body.
+     *
+     * @return map of all records
+     *
+     * @see Record
+     * @see FileRecord
+     * @see #getEntry(String)
+     * @since 5.0.0
+     */
     public final Map<String,Record> getEntries(){
         return new HashMap<>(data);
     }

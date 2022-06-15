@@ -18,8 +18,21 @@
 
 package dev.katsute.simplehttpserver.handler.file;
 
+/**
+ * Represents a set of options for an added file.
+ *
+ * @see FileHandler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class FileOptions {
 
+    /**
+     * Creates a new set of file options.
+     *
+     * @since 5.0.0
+     */
     public FileOptions(){ }
 
     FileOptions(final FileOptions options){
@@ -29,51 +42,154 @@ public class FileOptions {
         this.walk    = options.walk;
     }
 
+    /**
+     * The context that files should be served at relative to the file handler's context.
+     *
+     * @since 5.0.0
+     */
     public String context = "";
 
+    /**
+     * The file loading option.
+     *
+     * @see FileLoadingOption
+     * @since 5.0.0
+     */
     public FileLoadingOption loading = FileLoadingOption.LIVE;
 
+    /**
+     * How long to cache files for. Only used with {@link FileLoadingOption#CACHE}.
+     *
+     * @see FileLoadingOption#CACHE
+     * @since 5.0.0
+     */
     public long cache = 0;
 
+    /**
+     * When true, also include all subdirectories when adding directories.
+     *
+     * @since 5.0.0
+     */
     public boolean walk = false;
 
     //
 
+    /**
+     * How to load files added to the file handler.
+     *
+     * @since 5.0.0
+     * @version 5.0.0
+     * @author Katsute
+     */
     public enum FileLoadingOption {
 
+        /**
+         * File bytes will be read when file is added.
+         *
+         * @since 5.0.0
+         */
         PRELOAD,
+        /**
+         * File bytes will be read when file is added and any time it is modified.
+         *
+         * @since 5.0.0
+         */
         MODIFY,
+        /**
+         * File bytes will be read when requested, and cached for {@link #cache} milliseconds.
+         *
+         * @see FileOptions#cache
+         * @since 5.0.0
+         */
         CACHE,
+        /**
+         * File bytes will be read when requested.
+         *
+         * @since 5.0.0
+         */
         LIVE
 
     }
 
+    /**
+     * Builder used to create {@link FileOptions}.
+     *
+     * @see FileOptions
+     * @since 5.0.0
+     * @version 5.0.0
+     * @author Katsute
+     */
     public static class Builder {
 
         private final FileOptions options = new FileOptions();
 
+        /**
+         * Sets the context.
+         *
+         * @param context context
+         * @return builder
+         *
+         * @see FileOptions#context
+         * @since 5.0.0
+         */
         public final Builder setContext(final String context){
             options.context = context;
             return this;
         }
 
+        /**
+         * Sets the loading option.
+         *
+         * @param option loading option
+         * @return builder
+         *
+         * @see FileOptions#loading
+         * @see FileLoadingOption
+         * @since 5.0.0
+         */
         public final Builder setLoadingOption(final FileLoadingOption option){
             options.loading = option;
             return this;
         }
 
+        /**
+         * Sets the cache time.
+         *
+         * @param cache cache time
+         * @return builder
+         *
+         * @see FileOptions#cache
+         * @since 5.0.0
+         */
         public final Builder setCache(final long cache){
             options.cache = cache;
             return this;
         }
 
+        /**
+         * Sets the directory walk option.
+         *
+         * @param walk walk
+         * @return builder
+         *
+         * @see FileOptions#walk
+         * @since 5.0.0
+         */
         public final Builder setWalk(final boolean walk){
             options.walk = walk;
             return this;
         }
 
+        /**
+         * Returns the builder as file options.
+         *
+         * @return file options
+         *
+         * @see FileOptions
+         * @since 5.0.0
+         */
         public final FileOptions build(){
-            return options;
+            return new FileOptions(options);
         }
 
     }

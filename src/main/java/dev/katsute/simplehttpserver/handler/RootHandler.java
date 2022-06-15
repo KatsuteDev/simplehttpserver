@@ -20,8 +20,23 @@ package dev.katsute.simplehttpserver.handler;
 
 import com.sun.net.httpserver.HttpHandler;
 
+/**
+ * Handler that process requests for the root <code>/</code> context.
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class RootHandler extends PredicateHandler {
 
+    /**
+     * Creates a root handler.
+     *
+     * @param index handler to use for context <code>/</code>
+     * @param other handler to use for all other contexts, typically a 404 page
+     *
+     * @since 5.0.0
+     */
     public RootHandler(final HttpHandler index, final HttpHandler other){
         super(
             exchange -> exchange.getRequestURI().getPath().equals("/"),

@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import static dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption.*;
 
-public class DirectoryEntry {
+final class DirectoryEntry {
 
     private final File file;
     private final Path path;

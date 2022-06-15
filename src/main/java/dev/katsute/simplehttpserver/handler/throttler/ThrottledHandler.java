@@ -20,21 +20,28 @@ package dev.katsute.simplehttpserver.handler.throttler;
 
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
+import dev.katsute.simplehttpserver.SimpleHttpExchange;
+import dev.katsute.simplehttpserver.SimpleHttpHandler;
 
 import java.io.IOException;
 
-public class ThrottledHandler implements HttpHandler {
+public class ThrottledHandler implements SimpleHttpHandler {
 
     private final HttpHandler handler;
     private final ConnectionThrottler throttler;
 
-    public ThrottledHandler(final HttpHandler handler, final ConnectionThrottler throttler){
+    public ThrottledHandler(final ConnectionThrottler throttler, final HttpHandler handler){
         this.handler   = handler;
         this.throttler = throttler;
     }
 
     @Override
-    public final void handle(final HttpExchange exchange) throws IOException {
+    public final void handle(final HttpExchange exchange) throws IOException{
+        SimpleHttpHandler.super.handle(exchange);
+    }
+
+    @Override
+    public final void handle(final SimpleHttpExchange exchange) throws IOException {
         if(throttler.addConnection(exchange))
             try{
                 handler.handle(exchange);

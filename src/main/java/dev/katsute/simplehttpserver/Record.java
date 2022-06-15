@@ -20,6 +20,16 @@ package dev.katsute.simplehttpserver;
 
 import java.util.*;
 
+/**
+ * Represents a record in a multipart/form-data request.
+ *
+ * @see MultipartFormData
+ * @see FileRecord
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class Record {
 
     private final Map<String,Header> headers;
@@ -41,30 +51,90 @@ public class Record {
         this.headers = headers;
     }
 
+    /**
+     * Returns the form input name.
+     *
+     * @return form input name
+     *
+     * @since 5.0.0
+     */
     public final String getName(){
         return name;
     }
 
+    /**
+     * Returns the form value.
+     *
+     * @return form value
+     *
+     * @since 5.0.0
+     */
     public final String getValue(){
         return value;
     }
 
+    /**
+     * Returns a specified header.
+     *
+     * @param key header key
+     * @return header
+     *
+     * @see Header
+     * @see #getHeaders()
+     * @since 5.0.0
+     */
     public final Header getHeader(final String key){
         return headers.get(key);
     }
 
+    /**
+     * Returns all the headers.
+     *
+     * @return headers
+     *
+     * @see Header
+     * @see #getHeader(String)
+     * @since 5.0.0
+     */
     public final Map<String,Header> getHeaders(){
-        return new HashMap<String,Header>(headers);
+        return new HashMap<>(headers);
     }
 
+    /**
+     * Returns if the record is a {@link FileRecord}.
+     *
+     * @return if record is a file record
+     *
+     * @see #asFile()
+     * @see FileRecord
+     * @since 5.0.0
+     */
     public final boolean isFile(){
         return this instanceof FileRecord;
     }
 
+    /**
+     * Casts the record to a {@link FileRecord}.
+     *
+     * @return record as a file record
+     *
+     * @see #isFile()
+     * @see FileRecord
+     * @since 5.0.0
+     */
     public final FileRecord asFile(){
         return ((FileRecord) this);
     }
 
+    /**
+     * Represents a header in a multipart/form-data record.
+     *
+     * @see Record#getHeader(String)
+     * @see Record#getValue()
+     * @since 5.0.0
+     * @version 5.0.0
+     * @author Katsute
+     */
     public static class Header {
 
         private final String name, value;
@@ -76,20 +146,51 @@ public class Record {
             this.params = new HashMap<>(params);
         }
 
+        /**
+         * Returns the header name.
+         *
+         * @return header name
+         *
+         * @since 5.0.0
+         */
         public final String getName(){
             return name;
         }
 
+        /**
+         * Returns the header value.
+         *
+         * @return header value
+         *
+         * @since 5.0.0
+         */
         public final String getValue(){
             return value;
         }
 
+        /**
+         * Returns the value for a header parameter.
+         *
+         * @param key header key
+         * @return value of header parameter
+         *
+         * @see #getParameters()
+         * @since 5.0.0
+         */
         public final String getParameter(final String key){
-            return params.get(key);
+            return params.get(Objects.requireNonNull(key));
         }
 
+        /**
+         * Returns a map of all parameters for a header.
+         *
+         * @return header parameters
+         *
+         * @see #getParameter(String)
+         * @since 5.0.0
+         */
         public final Map<String,String> getParameters(){
-            return params;
+            return new HashMap<>(params);
         }
 
     }

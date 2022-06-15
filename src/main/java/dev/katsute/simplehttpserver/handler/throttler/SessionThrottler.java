@@ -18,26 +18,43 @@
 
 package dev.katsute.simplehttpserver.handler.throttler;
 
-import com.sun.net.httpserver.HttpExchange;
-import dev.katsute.simplehttpserver.HttpSession;
-import dev.katsute.simplehttpserver.HttpSessionHandler;
+import dev.katsute.simplehttpserver.*;
 
 import java.util.Map;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicInteger;
 
+/**
+ * A throttler that limits the amount of simultaneous connections based on the session.
+ *
+ * @see ConnectionThrottler
+ * @see HttpSession
+ * @see ServerSessionThrottler
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class SessionThrottler extends ConnectionThrottler {
 
     private final HttpSessionHandler sessionHandler;
     private final Map<HttpSession,AtomicInteger> connections = new ConcurrentHashMap<>();
 
+    /**
+     * Creates a throttler.
+     *
+     * @param sessionHandler session handler
+     *
+     * @see HttpSessionHandler
+     * @since 5.0.0
+     */
     public SessionThrottler(final HttpSessionHandler sessionHandler){
-        this.sessionHandler = sessionHandler;
+        this.sessionHandler = Objects.requireNonNull(sessionHandler);
     }
 
     @Override
-    final boolean addConnection(final HttpExchange exchange){
+    final boolean addConnection(final SimpleHttpExchange exchange){
         final HttpSession session = sessionHandler.getSession(exchange); // session
         final int maxConn = getMaxConnections(session, exchange); // max allowed for session
 
@@ -59,18 +76,29 @@ public class SessionThrottler extends ConnectionThrottler {
     }
 
     @Override
-    final void deleteConnection(final HttpExchange exchange){
+    final void deleteConnection(final SimpleHttpExchange exchange){
         final HttpSession session = sessionHandler.getSession(exchange); // session
         if(connections.containsKey(session))
             connections.get(session).decrementAndGet(); // decrease connections
     }
 
     @Override
-    public final int getMaxConnections(final HttpExchange exchange){
+    public final int getMaxConnections(final SimpleHttpExchange exchange){
         return getMaxConnections(sessionHandler.getSession(exchange), exchange);
     }
 
-    public int getMaxConnections(final HttpSession session, final HttpExchange exchange){
+    /**
+     * Returns the maximum number of connections allowed for a session. Return <code>-1</code> for unlimited connections.
+     *
+     * @param session session
+     * @param exchange exchange
+     * @return maximum connections
+     *
+     * @see HttpSession
+     * @see SimpleHttpExchange
+     * @since 5.0.0
+     */
+    public int getMaxConnections(final HttpSession session, final SimpleHttpExchange exchange){
         return -1;
     }
 

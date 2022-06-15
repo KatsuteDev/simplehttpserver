@@ -21,6 +21,16 @@ package dev.katsute.simplehttpserver;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 
+/**
+ * Represents a file in a multipart/form-data request.
+ *
+ * @see MultipartFormData
+ * @see Record
+ *
+ * @since 5.0.0
+ * @version 5.0.0
+ * @author Katsute
+ */
 public class FileRecord extends Record {
 
     final String fileName, contentType;
@@ -34,14 +44,35 @@ public class FileRecord extends Record {
         bytes       = getValue().getBytes(StandardCharsets.UTF_8);
     }
 
+    /**
+     * Returns the file name.
+     *
+     * @return file name
+     *
+     * @since 5.0.0
+     */
     public final String getFileName(){
         return fileName;
     }
 
+    /**
+     * Returns the file content type.
+     *
+     * @return content type
+     *
+     * @since 5.0.0
+     */
     public final String getContentType(){
         return contentType;
     }
 
+    /**
+     * Returns the file content as a byte array
+     *
+     * @return file in bytes
+     *
+     * @since 5.0.0
+     */
     public final byte[] getBytes(){
         return Arrays.copyOf(bytes, bytes.length); // dereference
     }
