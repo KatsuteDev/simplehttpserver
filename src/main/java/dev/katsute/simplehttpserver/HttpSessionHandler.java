@@ -77,7 +77,7 @@ public class HttpSessionHandler {
         if(headers.containsKey("Set-Cookie"))
            for(final String value : headers.get("Set-Cookie"))
                if(value.startsWith(cookie + "="))
-                   return value.substring(cookie.length() + 1, value.indexOf(";"));
+                   return value.substring(cookie.length() + 1, value.contains(";") ? value.indexOf(";") : value.length());
        return null;
     }
 
@@ -147,7 +147,6 @@ public class HttpSessionHandler {
                 };
 
                 final HttpCookie OUT = new HttpCookie(cookie, session.getSessionID());
-                OUT.setPath("/");
                 OUT.setHttpOnly(true);
 
                 exchange.getResponseHeaders().add("Set-Cookie", OUT.toString());

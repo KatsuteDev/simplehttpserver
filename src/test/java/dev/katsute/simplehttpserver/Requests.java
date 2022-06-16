@@ -1,11 +1,14 @@
 package dev.katsute.simplehttpserver;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.charset.StandardCharsets;
 
 public class Requests {
+
+    static{
+        CookieHandler.setDefault(new CookieManager());
+    }
 
     public static HttpURLConnection openConn(final String URL){
         try{
@@ -27,19 +30,28 @@ public class Requests {
     }
 
     public static String getBody(final String URL){
-        return getBody(openConn(URL));
+        return getBody(openConn(URL), false);
+    }
+
+    public static String getBody(final String URL, final boolean ignoreError){
+        return getBody(openConn(URL), ignoreError);
     }
 
     public static String getBody(final HttpURLConnection conn){
+        return getBody(conn, false);
+    }
+
+    public static String getBody(final HttpURLConnection conn, final boolean ignoreError){
+        final StringBuilder OUT = new StringBuilder();
         try(final BufferedReader IN = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))){
             String buffer;
-            final StringBuilder OUT = new StringBuilder();
             while((buffer = IN.readLine()) != null)
-                OUT.append(buffer);
-            return OUT.toString();
+                OUT.append(buffer).append('\n');
         }catch(final IOException e){
-            throw new UncheckedIOException(e);
+            if(!ignoreError)
+                throw new UncheckedIOException(e);
         }
+        return OUT.toString().trim();
     }
 
 }

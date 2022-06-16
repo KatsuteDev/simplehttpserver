@@ -79,9 +79,11 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
         getMap = rawGet == null ? new HashMap<>() : parseWwwFormEnc(rawGet);
 
         String OUT;
-        try(final Stream<String> lns = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)).lines()){
-            OUT = lns.collect(Collectors.joining("\n"));
-        }catch(Throwable e){
+        try(final InputStreamReader IN = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)){
+            try(final Stream<String> lns = new BufferedReader(IN).lines()){
+                OUT = lns.collect(Collectors.joining("\n"));
+            }
+        }catch(final Throwable e){
             OUT = null;
         }
 
