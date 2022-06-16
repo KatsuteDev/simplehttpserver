@@ -74,10 +74,13 @@ public class HttpSessionHandler {
     }
 
     private String getSetSession(final Headers headers){ // get session that will be set by cookie
-        if(headers.containsKey("Set-Cookie"))
-           for(final String value : headers.get("Set-Cookie"))
-               if(value.startsWith(cookie + "="))
-                   return value.substring(cookie.length() + 1, value.contains(";") ? value.indexOf(";") : value.length());
+        for(final Map.Entry<String,List<String>> entry : headers.entrySet())
+            if(entry.getKey().equalsIgnoreCase("Set-Cookie")){
+                for(final String value : entry.getValue())
+                    if(value.startsWith(cookie + "=\""))
+                        return value.substring(cookie.length() + 2, value.length() - 1);
+                break;
+            }
        return null;
     }
 
@@ -93,15 +96,14 @@ public class HttpSessionHandler {
         final String sessionID;
         final HttpSession session;
 
-        @SuppressWarnings("SpellCheckingInspection")
-        final String rcookies = Objects.requireNonNull(exchange).getRequestHeaders().getFirst("Cookie");
         final Map<String,String> cookies = new HashMap<>();
-
-        if(rcookies != null && !rcookies.isEmpty()){
-            final String[] pairs = rcookies.split("; ");
-            for(final String pair : pairs){
-                final String[] value = pair.split("=");
-                cookies.put(value[0], value[1]);
+        for(final Map.Entry<String,List<String>> entry : Objects.requireNonNull(exchange).getRequestHeaders().entrySet()){
+            if(entry.getKey().equalsIgnoreCase("Cookie")){
+                for(final String value : entry.getValue()){
+                    final String[] pair = value.split("=");
+                    cookies.put(pair[0], pair[1]);
+                }
+                break;
             }
         }
 

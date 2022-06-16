@@ -1,4 +1,4 @@
-package dev.katsute.simplehttpserver.server;
+package dev.katsute.simplehttpserver;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
@@ -10,8 +10,7 @@ import java.net.BindException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@Disabled
-class ServerTests {
+final class ServerTests {
 
     @Test
     final void testReference() throws IOException{
@@ -30,12 +29,21 @@ class ServerTests {
     @Nested
     final class BindTests {
 
+        @BeforeEach
+        final void beforeEach() throws InterruptedException{
+            Thread.sleep(500);
+        }
+
         @Test
         final void testBind() throws IOException{
             final SimpleHttpServer server = SimpleHttpServer.create();
             assertNull(server.getAddress());
             assertDoesNotThrow(() -> server.bind(8080));
             assertTrue(server.getAddress().getAddress().isAnyLocalAddress());
+
+            // required to unbind
+            server.start();
+            server.stop();
         }
 
         @Test
@@ -55,12 +63,16 @@ class ServerTests {
     @Nested
     final class CreateTests {
 
-        @SuppressWarnings("SpellCheckingInspection")
+        @BeforeEach
+        final void beforeEach() throws InterruptedException{
+            Thread.sleep(500);
+        }
+
         @Test
         final void testHttpCreate() throws IOException{
             final SimpleHttpServer server = SimpleHttpServer.create();
 
-            assertThrows(IllegalStateException.class, server::start, "Unbinded server should throw an excaption");
+            assertThrows(IllegalStateException.class, server::start);
 
             server.bind(8080);
             assertEquals(8080, server.getAddress().getPort());
@@ -72,12 +84,11 @@ class ServerTests {
             assertDoesNotThrow(() -> server.stop(), "Second stop should not throw an exception");
         }
 
-        @SuppressWarnings("SpellCheckingInspection")
         @Test
         final void testHttpsCreate() throws IOException{
             final SimpleHttpsServer server = SimpleHttpsServer.create();
 
-            assertThrows(IllegalStateException.class, server::start, "Unbinded server should throw an excaption");
+            assertThrows(IllegalStateException.class, server::start);
 
             server.bind(8080);
             assertEquals(8080, server.getAddress().getPort());

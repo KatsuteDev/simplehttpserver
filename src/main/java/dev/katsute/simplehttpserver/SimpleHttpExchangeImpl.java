@@ -79,11 +79,12 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
         getMap = rawGet == null ? new HashMap<>() : parseWwwFormEnc(rawGet);
 
         String OUT;
-        try(final InputStreamReader IN = new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)){
-            try(final Stream<String> lns = new BufferedReader(IN).lines()){
-                OUT = lns.collect(Collectors.joining("\n"));
-            }
-        }catch(final Throwable e){
+        try(
+            final InputStream IN = exchange.getRequestBody();
+            final Scanner scanner = new Scanner(IN, "UTF-8")
+        ){
+            OUT = scanner.useDelimiter("\\A").next();
+        }catch(final IOException | NoSuchElementException ignored){
             OUT = null;
         }
 
@@ -155,16 +156,18 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
             multipartFormData = null;
         }
 
-        final String rawCookie = exchange.getRequestHeaders().getFirst("Cookie");
-        final Map<String,String> cookie_buffer = new HashMap<>();
-        if(rawCookie != null && !rawCookie.isEmpty()){
-            final String[] cookedCookie = rawCookie.split("; "); // pair
-            for(final String pair : cookedCookie){
-                String[] value = pair.split("=");
-                cookie_buffer.put(value[0], value[1]);
+        final Map<String,String> cookies = new HashMap<>();
+        for(final Map.Entry<String,List<String>> entry : Objects.requireNonNull(exchange).getRequestHeaders().entrySet()){
+            if(entry.getKey().equalsIgnoreCase("Cookie")){
+                for(final String value : entry.getValue()){
+                    final String[] pair = value.split("=");
+                    cookies.put(pair[0], pair[1]);
+                }
+                break;
             }
         }
-        cookies = cookie_buffer;
+
+        this.cookies = cookies;
     }
 
     //
@@ -353,7 +356,10 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
             exchange.getResponseHeaders().set("Content-Encoding","gzip");
             exchange.getResponseHeaders().set("Connection","keep-alive");
             sendResponseHeaders(responseCode, 0);
-            try(GZIPOutputStream OUT = new GZIPOutputStream(exchange.getResponseBody())){
+            try(
+                final OutputStream OS = exchange.getResponseBody();
+                final GZIPOutputStream OUT = new GZIPOutputStream(OS);
+            ){
                 OUT.write(Objects.requireNonNull(response));
                 OUT.finish();
                 OUT.flush();

@@ -6,8 +6,10 @@ import java.nio.charset.StandardCharsets;
 
 public class Requests {
 
+    public static CookieManager Cookies = new CookieManager();
+
     static{
-        CookieHandler.setDefault(new CookieManager());
+        CookieHandler.setDefault(Cookies);
     }
 
     public static HttpURLConnection openConn(final String URL){
