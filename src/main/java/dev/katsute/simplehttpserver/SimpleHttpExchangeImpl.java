@@ -28,6 +28,7 @@ import java.util.*;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.GZIPOutputStream;
 
 final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
@@ -78,9 +79,9 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
         getMap = rawGet == null ? new HashMap<>() : parseWwwFormEnc(rawGet);
 
         String OUT;
-        try(final BufferedReader IN = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8))){
-            OUT = IN.lines().collect(Collectors.joining("\n"));
-        }catch(final IOException | NoSuchElementException ignored){
+        try(final Stream<String> lns = new BufferedReader(new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)).lines()){
+            OUT = lns.collect(Collectors.joining("\n"));
+        }catch(Throwable e){
             OUT = null;
         }
 
@@ -391,7 +392,7 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
 
     @Override
     public final void send(final File file, final boolean gzip) throws IOException {
-        send(file, HttpURLConnection.HTTP_OK, true);
+        send(file, HttpURLConnection.HTTP_OK, gzip);
     }
 
     @Override

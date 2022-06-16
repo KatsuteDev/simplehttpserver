@@ -246,7 +246,6 @@
                     <excludes>
                         <exclude/>
                     </excludes>
-                    <reuseForks>false</reuseForks> <!-- required to prevent server binding issues -->
                     <trimStackTrace>false</trimStackTrace>
                 </configuration>
             </plugin>

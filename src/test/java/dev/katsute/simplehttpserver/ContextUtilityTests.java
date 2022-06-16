@@ -1,35 +1,44 @@
 package dev.katsute.simplehttpserver;
 
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
-import static dev.katsute.simplehttpserver.ContextUtility.*;
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.stream.Stream;
 
 final class ContextUtilityTests {
 
-     @Test
-     public final void testContexts(){
-          assertEquals("", getContext("/", false, false));
-          assertEquals("/", getContext("", true, false));
-          assertEquals("/", getContext("", false, true ));
-          assertEquals("/", getContext("", true, true ));
-          assertEquals("a", getContext("a", false, false));
-          assertEquals("/a", getContext("a", true, false));
-          assertEquals("a/", getContext("a", false, true ));
-          assertEquals("/a/", getContext("a", true, true ));
-          assertEquals("testNone", getContext("/testNone/", false, false));
-          assertEquals("/testLeading", getContext("testLeading", true, false));
-          assertEquals("testTrailing/", getContext("testTrailing", false, true ));
-          assertEquals("/testBoth/", getContext("testBoth", true, true ));
-          assertEquals("testNoneBackSlash", getContext("\\testNoneBackSlash\\", false, false));
-          assertEquals("/testBackSlash/", getContext("\\testBackSlash\\", true, true ));
-          assertEquals("/testConsecutiveBackSlash/", getContext("\\\\testConsecutiveBackSlash\\\\", true, true ));
-          assertEquals("/testConsecutiveForwardSlash/", getContext("//testConsecutiveForwardSlash//", true, true ));
-          assertEquals("/testWhitespace/", getContext(" /testWhitespace/ ", true, true));
-          assertEquals("/ testWhitespace /", getContext("/ testWhitespace /", true, true));
-          assertEquals(" testWhitespace ", getContext("/ testWhitespace /", false, false));
-          assertEquals("testWhitespace", getContext(" testWhitespace ", false, false));
-          assertEquals("/testWhitespace/", getContext(" /testWhitespace/ ", true, true));
+     @ParameterizedTest
+     @MethodSource("contextArgs")
+     final void testContexts(final String expected, final String input, final boolean leading, final boolean trailing){
+          Assertions.assertEquals(expected, ContextUtility.getContext(input, leading, trailing));
+     }
+
+     static Stream<Arguments> contextArgs(){
+          return Stream.of(
+               Arguments.of("", "/", false, false),
+               Arguments.of("/", "", true, false),
+               Arguments.of("/", "", false, true ),
+               Arguments.of("/", "", true, true ),
+               Arguments.of("a", "a", false, false),
+               Arguments.of("/a", "a", true, false),
+               Arguments.of("a/", "a", false, true ),
+               Arguments.of("/a/", "a", true, true ),
+               Arguments.of("testNone", "/testNone/", false, false),
+               Arguments.of("/testLeading", "testLeading", true, false),
+               Arguments.of("testTrailing/", "testTrailing", false, true ),
+               Arguments.of("/testBoth/", "testBoth", true, true ),
+               Arguments.of("testNoneBackSlash", "\\testNoneBackSlash\\", false, false),
+               Arguments.of("/testBackSlash/", "\\testBackSlash\\", true, true ),
+               Arguments.of("/testConsecutiveBackSlash/", "\\\\testConsecutiveBackSlash\\\\", true, true ),
+               Arguments.of("/testConsecutiveForwardSlash/", "//testConsecutiveForwardSlash//", true, true ),
+               Arguments.of("/testWhitespace/", " /testWhitespace/ ", true, true),
+               Arguments.of("/ testWhitespace /", "/ testWhitespace /", true, true),
+               Arguments.of(" testWhitespace ", "/ testWhitespace /", false, false),
+               Arguments.of("testWhitespace", " testWhitespace ", false, false),
+               Arguments.of("/testWhitespace/", " /testWhitespace/ ", true, true)
+          );
      }
 
 }

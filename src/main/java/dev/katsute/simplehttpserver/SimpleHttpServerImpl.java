@@ -101,7 +101,6 @@ final class SimpleHttpServerImpl extends SimpleHttpServer {
         server.setExecutor(executor);
     }
 
-
     //
 
     @Override
@@ -134,16 +133,13 @@ final class SimpleHttpServerImpl extends SimpleHttpServer {
         if(!ct.equals("/") && Objects.requireNonNull(handler) instanceof RootHandler)
             throw new IllegalArgumentException("RootHandler can only be used at the root '/' context");
 
-
         final HttpContext hc = server.createContext(ct);
 
-        if(sessionHandler != null){
-            final HttpHandler wrapper = exchange -> {
-                handle(exchange);
-                handler.handle(exchange);
-            };
-            hc.setHandler(wrapper);
-        }
+        final HttpHandler wrapper = exchange -> {
+            handle(exchange);
+            handler.handle(exchange);
+        };
+        hc.setHandler(wrapper);
 
         contexts.put(hc, handler);
 

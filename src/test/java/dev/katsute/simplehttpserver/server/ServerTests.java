@@ -10,6 +10,7 @@ import java.net.BindException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+@Disabled
 class ServerTests {
 
     @Test
