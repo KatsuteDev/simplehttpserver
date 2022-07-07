@@ -1,12 +1,11 @@
-package dev.katsute.simplehttpserver;
+package dev.katsute.simplehttpserver.server;
 
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import dev.katsute.simplehttpserver.*;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.net.BindException;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -26,86 +25,9 @@ final class ServerTests {
         assertTrue(server.getContexts().isEmpty());
     }
 
-    @Nested
-    final class BindTests {
+    //
 
-        @BeforeEach
-        final void beforeEach() throws InterruptedException{
-            Thread.sleep(500);
-        }
-
-        @Test
-        final void testBind() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
-            assertNull(server.getAddress());
-            assertDoesNotThrow(() -> server.bind(8080));
-            assertTrue(server.getAddress().getAddress().isAnyLocalAddress());
-
-            // required to unbind
-            server.start();
-            server.stop();
-        }
-
-        @Test
-        final void testOccupied() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create(8080);
-            server.start();
-
-            Assertions.assertThrows(BindException.class, () -> SimpleHttpServer.create(8080));
-
-            server.stop();
-
-            Assertions.assertDoesNotThrow(() -> SimpleHttpServer.create(8080));
-        }
-
-    }
-
-    @Nested
-    final class CreateTests {
-
-        @BeforeEach
-        final void beforeEach() throws InterruptedException{
-            Thread.sleep(500);
-        }
-
-        @Test
-        final void testHttpCreate() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
-
-            assertThrows(IllegalStateException.class, server::start);
-
-            server.bind(8080);
-            assertEquals(8080, server.getAddress().getPort());
-
-            assertDoesNotThrow(server::start);
-            assertThrows(IllegalStateException.class, server::start);
-
-            assertDoesNotThrow(() -> server.stop());
-            assertDoesNotThrow(() -> server.stop(), "Second stop should not throw an exception");
-        }
-
-        @Test
-        final void testHttpsCreate() throws IOException{
-            final SimpleHttpsServer server = SimpleHttpsServer.create();
-
-            assertThrows(IllegalStateException.class, server::start);
-
-            server.bind(8080);
-            assertEquals(8080, server.getAddress().getPort());
-
-            assertDoesNotThrow(server::start);
-            assertThrows(IllegalStateException.class, server::start);
-
-            assertDoesNotThrow(() -> server.stop());
-            assertDoesNotThrow(() -> server.stop(), "Second stop should not throw an exception");
-        }
-
-    }
-
-    @Nested
-    final class ContextTests {
-
-        @Test
+    @Test
         final void testRandomContext() throws IOException{
             final SimpleHttpServer server = SimpleHttpServer.create();
 
@@ -191,7 +113,5 @@ final class ServerTests {
             server.createContext("");
             server.createContext("", HttpExchange::close); // supposed to throw an exception, docs are invalid
         }
-
-    }
 
 }

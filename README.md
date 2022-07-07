@@ -1,4 +1,7 @@
 <div id="top" align="center">
+    <a href="https://github.com/KatsuteDev/simplehttpserver">
+        <img src="https://raw.githubusercontent.com/KatsuteDev/simplehttpserver/main/assets/icon.png" alt="icon" width="100" height="100">
+    </a>
     <h3>SimpleHttpServer</h3>
     <h5>A simple and efficient HTTP server for Java</h5>
     <div>
@@ -20,8 +23,7 @@
 
 <br>
 
-> **Warning**:
-> simplehttpserver5 is not compatible with any previous version of [simplehttpserver](https://github.com/Ktt-Development/simplehttpserver)
+> ⚠️ simplehttpserver5 is not compatible with any previous version of [simplehttpserver](https://github.com/Ktt-Development/simplehttpserver)
 
 🚧 WIP
 
