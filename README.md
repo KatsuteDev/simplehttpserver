@@ -9,16 +9,14 @@
         •
         <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/setup.md#readme">Setup</a>
     </div>
-</div>
-
-<br>
-
-<div align="center">
-    <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
-    •
-    GitHub Packages
-    •
-    <a href="https://github.com/KatsuteDev/simplehttpserver/releases">Releases</a>
+    <br>
+    <div>
+        <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
+        •
+        GitHub Packages
+        •
+        <a href="https://github.com/KatsuteDev/simplehttpserver/releases">Releases</a>
+    </div>
 </div>
 
 <br>
