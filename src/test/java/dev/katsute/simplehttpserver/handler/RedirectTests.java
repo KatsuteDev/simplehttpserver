@@ -1,6 +1,6 @@
 package dev.katsute.simplehttpserver.handler;
 
-import dev.katsute.simplehttpserver.*;
+import dev.katsute.simplehttpserver.SimpleHttpServer;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;

@@ -1,11 +1,9 @@
 package dev.katsute.simplehttpserver.exchange;
 
-import com.sun.net.httpserver.HttpContext;
 import dev.katsute.simplehttpserver.*;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.net.CookieHandler;
 import java.net.URI;
 import java.util.concurrent.atomic.AtomicReference;
 

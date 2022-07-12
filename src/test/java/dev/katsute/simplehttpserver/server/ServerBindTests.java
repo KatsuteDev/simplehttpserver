@@ -1,7 +1,8 @@
 package dev.katsute.simplehttpserver.server;
 
 import dev.katsute.simplehttpserver.SimpleHttpServer;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.net.BindException;

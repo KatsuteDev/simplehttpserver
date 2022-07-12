@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import dev.katsute.simplehttpserver.*;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.*;
 
 import java.io.IOException;
 
@@ -90,7 +91,7 @@ final class ServerTests {
 
             final SimpleHttpHandler handler = SimpleHttpExchange::close;
 
-            assertSame(handler, server.getContextHandler(server.createContext("", handler)));
+            assertSame(handler, server.getContextHandler(server.createContext("close", handler)));
             assertEquals(2, server.getContexts().size());
         }
 
@@ -106,12 +107,22 @@ final class ServerTests {
             server.removeContext("/");
         }
 
-        @Test
-        final void testDuplicateContext() throws IOException{
+        @Test @EnabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+        final void testDuplicateContext8() throws IOException{
             final SimpleHttpServer server = SimpleHttpServer.create();
 
             server.createContext("");
-            server.createContext("", HttpExchange::close); // supposed to throw an exception, docs are invalid
+
+            assertDoesNotThrow(() -> server.createContext("", HttpExchange::close));
+        }
+
+        @Test @DisabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+        final void testDuplicateContext18() throws IOException{
+            final SimpleHttpServer server = SimpleHttpServer.create();
+
+            server.createContext("");
+
+            assertThrows(IllegalArgumentException.class, () -> server.createContext("", HttpExchange::close));
         }
 
 }

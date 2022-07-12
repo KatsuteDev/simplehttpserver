@@ -2,7 +2,6 @@ package dev.katsute.simplehttpserver.server;
 
 import dev.katsute.simplehttpserver.SimpleHttpServer;
 import dev.katsute.simplehttpserver.SimpleHttpsServer;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
