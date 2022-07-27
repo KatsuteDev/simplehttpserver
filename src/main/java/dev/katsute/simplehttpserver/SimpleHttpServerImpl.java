@@ -139,6 +139,7 @@ final class SimpleHttpServerImpl extends SimpleHttpServer {
             handle(exchange);
             handler.handle(exchange);
         };
+
         hc.setHandler(wrapper);
 
         contexts.put(hc, handler);

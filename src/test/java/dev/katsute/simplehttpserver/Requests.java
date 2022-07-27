@@ -3,6 +3,7 @@ package dev.katsute.simplehttpserver;
 import java.io.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
+import java.util.zip.GZIPInputStream;
 
 public class Requests {
 
@@ -45,7 +46,7 @@ public class Requests {
 
     public static String getBody(final HttpURLConnection conn, final boolean ignoreError){
         final StringBuilder OUT = new StringBuilder();
-        try(final BufferedReader IN = new BufferedReader(new InputStreamReader(conn.getInputStream(), StandardCharsets.UTF_8))){
+        try(final BufferedReader IN = new BufferedReader(new InputStreamReader("gzip".equalsIgnoreCase(conn.getContentEncoding()) ? new GZIPInputStream(conn.getInputStream()) : conn.getInputStream(), StandardCharsets.UTF_8))){
             String buffer;
             while((buffer = IN.readLine()) != null)
                 OUT.append(buffer).append('\n');

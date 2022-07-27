@@ -41,7 +41,7 @@ public class Record {
         value = Objects.requireNonNull(Objects.requireNonNull(entry.getValue()).get("value")).toString();
 
         final Map<String,Header> headers = new HashMap<>();
-        for(final Map.Entry<String,Map<String,?>> e : Objects.requireNonNull((Map<String,Map<String,?>>) entry.getValue().get("Headers")).entrySet()){
+        for(final Map.Entry<String,Map<String,?>> e : Objects.requireNonNull((Map<String,Map<String,?>>) entry.getValue().get("headers")).entrySet()){
             headers.put(e.getKey(), new Header(
                 Objects.requireNonNull(e.getValue().get("header-name")).toString(),
                 Objects.requireNonNull(e.getValue().get("header-value")).toString(),
