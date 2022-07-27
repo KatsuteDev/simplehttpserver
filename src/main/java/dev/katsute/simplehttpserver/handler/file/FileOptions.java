@@ -72,6 +72,16 @@ public class FileOptions {
      */
     public boolean walk = false;
 
+    @Override
+    public String toString(){
+        return "FileOptions{" +
+               "context='" + context + '\'' +
+               ", loading=" + loading +
+               ", cache=" + cache +
+               ", walk=" + walk +
+               '}';
+    }
+
     //
 
     /**
@@ -190,6 +200,13 @@ public class FileOptions {
          */
         public final FileOptions build(){
             return new FileOptions(options);
+        }
+
+        @Override
+        public String toString(){
+            return "Builder{" +
+                   "options=" + options +
+                   '}';
         }
 
     }

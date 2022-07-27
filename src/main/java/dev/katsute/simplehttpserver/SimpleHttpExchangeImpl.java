@@ -423,4 +423,20 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
         }
     }
 
+    //
+
+
+    @Override
+    public String toString(){
+        return "SimpleHttpExchange{" +
+               "exchange=" + exchange +
+               ", rawGet='" + rawGet + '\'' +
+               ", getMap=" + getMap +
+               ", rawPost='" + rawPost + '\'' +
+               ", postMap=" + postMap +
+               ", multipartFormData=" + multipartFormData +
+               ", cookies=" + cookies +
+               '}';
+    }
+
 }

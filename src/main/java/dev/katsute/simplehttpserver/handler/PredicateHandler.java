@@ -68,4 +68,15 @@ public class PredicateHandler implements SimpleHttpHandler {
         (predicate.test(exchange) ? T : F).handle(exchange);
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "PredicateHandler{" +
+               "T=" + T +
+               ", F=" + F +
+               ", predicate=" + predicate +
+               '}';
+    }
+
 }

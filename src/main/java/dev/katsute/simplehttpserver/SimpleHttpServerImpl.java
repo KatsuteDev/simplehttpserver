@@ -232,4 +232,13 @@ final class SimpleHttpServerImpl extends SimpleHttpServer {
 
 // endregion
 
+    @Override
+    public String toString(){
+        return "SimpleHttpServer{" +
+               "server=" + server +
+               ", sessionHandler=" + sessionHandler +
+               ", contexts=" + contexts +
+               '}';
+    }
+
 }

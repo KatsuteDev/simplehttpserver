@@ -147,4 +147,20 @@ final class DirectoryEntry {
         }
     }
 
+    //
+
+
+    @Override
+    public String toString(){
+        return "DirectoryEntry{" +
+               "file=" + file +
+               ", path=" + path +
+               ", abs='" + abs + '\'' +
+               ", absl='" + absl + '\'' +
+               ", adapter=" + adapter +
+               ", options=" + options +
+               ", files=" + files +
+               '}';
+    }
+
 }

@@ -247,4 +247,14 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
 
 // endregion
 
+
+    @Override
+    public String toString(){
+        return "SimpleHttpsServer{" +
+               "server=" + server +
+               ", sessionHandler=" + sessionHandler +
+               ", contexts=" + contexts +
+               '}';
+    }
+
 }

@@ -77,4 +77,15 @@ public class FileRecord extends Record {
         return Arrays.copyOf(bytes, bytes.length); // dereference
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "FileRecord{" +
+               "fileName='" + fileName + '\'' +
+               ", contentType='" + contentType + '\'' +
+               ", bytes=" + Arrays.toString(bytes) +
+               '}';
+    }
+
 }

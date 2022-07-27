@@ -195,4 +195,15 @@ public class Record {
 
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "Record{" +
+               "headers=" + headers +
+               ", name='" + name + '\'' +
+               ", value='" + value + '\'' +
+               '}';
+    }
+
 }

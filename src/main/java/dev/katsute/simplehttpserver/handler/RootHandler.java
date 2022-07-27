@@ -47,4 +47,11 @@ public class RootHandler extends PredicateHandler {
         );
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "RootHandler{}";
+    }
+
 }

@@ -67,4 +67,13 @@ public class MultipartFormData {
         return new HashMap<>(data);
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "MultipartFormData{" +
+               "data=" + data +
+               '}';
+    }
+
 }

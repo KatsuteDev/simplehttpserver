@@ -21,6 +21,7 @@ package dev.katsute.simplehttpserver.handler.file;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicLong;
 
 import static dev.katsute.simplehttpserver.handler.file.FileOptions.FileLoadingOption.*;
@@ -120,6 +121,23 @@ final class FileEntry {
 
     final boolean isExpired(){
         return options.loading == CACHE && expiry.get() < System.currentTimeMillis();
+    }
+
+    //
+
+
+    @Override
+    public String toString(){
+        return "FileEntry{" +
+               "file=" + file +
+               ", path=" + path +
+               ", adapter=" + adapter +
+               ", options=" + options +
+               ", bytes=" + Arrays.toString(bytes) +
+               ", lastModified=" + lastModified +
+               ", expiry=" + expiry +
+               ", expired=" + isExpired() +
+               '}';
     }
 
 }

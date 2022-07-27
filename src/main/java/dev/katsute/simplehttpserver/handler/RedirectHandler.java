@@ -54,4 +54,13 @@ public class RedirectHandler implements HttpHandler {
         exchange.close();
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "RedirectHandler{" +
+               "link='" + link + '\'' +
+               '}';
+    }
+
 }

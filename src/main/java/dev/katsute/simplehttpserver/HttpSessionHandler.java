@@ -160,4 +160,14 @@ public class HttpSessionHandler {
         return session;
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "HttpSessionHandler{" +
+               "sessions=" + sessions +
+               ", cookie='" + cookie + '\'' +
+               '}';
+    }
+
 }

@@ -124,6 +124,19 @@ public class SSEHandler implements SimpleHttpHandler {
         }
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "SSEHandler{" +
+               "listeners=" + listeners +
+               ", eventID=" + eventID +
+               ", queue=" + queue +
+               '}';
+    }
+
+    //
+
     private static class EventStreamRecord {
 
         private final int retry;

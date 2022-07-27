@@ -73,4 +73,14 @@ public class TemporaryHandler implements HttpHandler {
         exchange.close();
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "TemporaryHandler{" +
+               "handler=" + handler +
+               ", expiry=" + expiry +
+               '}';
+    }
+
 }

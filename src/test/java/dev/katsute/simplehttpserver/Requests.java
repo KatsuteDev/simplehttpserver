@@ -53,6 +53,8 @@ public class Requests {
         }catch(final IOException e){
             if(!ignoreError)
                 throw new UncheckedIOException(e);
+            else
+                return null;
         }
         return OUT.toString().trim();
     }

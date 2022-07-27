@@ -385,6 +385,12 @@ public class FileHandler implements SimpleHttpHandler {
 
         if(files.containsKey(context)){ // exact file match
             final FileEntry entry = files.get(context);
+
+            if(entry.isExpired()){
+                refreshExpired = true; // check if other files also need clearing
+                entry.clearBytes();
+            }
+
             handle(exchange, entry.getFile(), entry.getBytes());
         }else{ // leading directory match
             String match = "";
@@ -440,6 +446,17 @@ public class FileHandler implements SimpleHttpHandler {
      */
     public void handle(final SimpleHttpExchange exchange, final File source, final byte[] bytes) throws IOException {
         exchange.send(bytes, HttpURLConnection.HTTP_OK);
+    }
+
+    //
+
+    @Override
+    public String toString(){
+        return "FileHandler{" +
+               "adapter=" + adapter +
+               ", files=" + files +
+               ", directories=" + directories +
+               '}';
     }
 
 }
