@@ -17,8 +17,7 @@ final class FileHandlerNoWalkTests {
 
     @TempDir
     private static File dir = new File(testContent);
-    @TempDir
-    private static File subdir = new File(dir, testContent);
+    private static File subdir;
 
     private static final FileHandler handler = new FileHandler(new FileAdapter() {
         @Override
@@ -33,6 +32,8 @@ final class FileHandlerNoWalkTests {
 
         final File file = new File(dir, testContent + ".txt");
         Files.write(file.toPath(), testContent.getBytes());
+        subdir = new File(dir, "sd");
+        Assertions.assertTrue(subdir.mkdirs());
         final File walk = new File(subdir, testContent + ".txt");
         Files.write(walk.toPath(), testContent.getBytes());
 

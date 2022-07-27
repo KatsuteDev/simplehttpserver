@@ -17,7 +17,6 @@ final class FileHandlerWalkTests {
 
     @TempDir
     private static File dir = new File(testContent);
-    @TempDir
     private static File subdir = new File(dir, testContent);
 
     private static final FileHandler handler = new FileHandler(new FileAdapter() {
@@ -33,6 +32,8 @@ final class FileHandlerWalkTests {
 
         final File file = new File(dir, testContent + ".txt");
         Files.write(file.toPath(), testContent.getBytes());
+        subdir = new File(dir, "sd");
+        Assertions.assertTrue(subdir.mkdirs());
         final File walk = new File(subdir, testContent + ".txt");
         Files.write(walk.toPath(), testContent.getBytes());
 
@@ -59,9 +60,8 @@ final class FileHandlerWalkTests {
             dir.getName() + '/' + subdir.getName() + '/' + testContent,
         };
 
-        for(final String path : validPathsToTest){
+        for(final String path : validPathsToTest)
             Assertions.assertEquals(testContent, Requests.getBody("http://localhost:8080/" + path));
-        }
     }
 
     @Test

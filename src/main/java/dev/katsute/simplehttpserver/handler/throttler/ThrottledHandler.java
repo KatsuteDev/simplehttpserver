@@ -72,4 +72,15 @@ public class ThrottledHandler implements SimpleHttpHandler {
         exchange.close();
     }
 
+    //
+
+
+    @Override
+    public String toString(){
+        return "ThrottledHandler{" +
+               "handler=" + handler +
+               ", throttler=" + throttler +
+               '}';
+    }
+
 }

@@ -161,4 +161,15 @@ public class ServerExchangeThrottler extends ConnectionThrottler {
         return maxConn.get();
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "ServerExchangeThrottler{" +
+               "connections=" + connections +
+               ", connCount=" + connCount +
+               ", maxConn=" + maxConn +
+               '}';
+    }
+
 }

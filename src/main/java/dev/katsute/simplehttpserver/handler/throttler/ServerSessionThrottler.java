@@ -187,5 +187,16 @@ public class ServerSessionThrottler extends ConnectionThrottler {
         return maxConn.get();
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "ServerSessionThrottler{" +
+               "sessionHandler=" + sessionHandler +
+               ", connections=" + connections +
+               ", connCount=" + connCount +
+               ", maxConn=" + maxConn +
+               '}';
+    }
 
 }

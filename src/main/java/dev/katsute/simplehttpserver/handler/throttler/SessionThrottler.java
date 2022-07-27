@@ -102,5 +102,14 @@ public class SessionThrottler extends ConnectionThrottler {
         return -1;
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "SessionThrottler{" +
+               "sessionHandler=" + sessionHandler +
+               ", connections=" + connections +
+               '}';
+    }
 
 }

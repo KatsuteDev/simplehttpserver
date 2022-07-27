@@ -18,7 +18,6 @@ final class FileHandlerDirTests {
 
     @TempDir
     private static File dir = new File(testContent);
-    @TempDir
     private static File subdir = new File(dir, testContent);
 
     private static final FileHandler handler = new FileHandler();
@@ -31,6 +30,8 @@ final class FileHandlerDirTests {
 
         final File file = new File(dir, testContent);
         Files.write(file.toPath(), testContent.getBytes());
+        subdir = new File(dir, "sd");
+        Assertions.assertTrue(subdir.mkdirs());
         final File walk = new File(subdir, testContent);
         Files.write(walk.toPath(), testContent.getBytes());
 

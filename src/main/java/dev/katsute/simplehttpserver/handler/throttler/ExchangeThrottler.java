@@ -80,4 +80,13 @@ public class ExchangeThrottler extends ConnectionThrottler {
         return 0;
     }
 
+    //
+
+    @Override
+    public String toString(){
+        return "ExchangeThrottler{" +
+               "connections=" + connections +
+               '}';
+    }
+
 }
