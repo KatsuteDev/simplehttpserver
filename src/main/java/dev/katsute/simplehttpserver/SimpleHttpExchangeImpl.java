@@ -425,7 +425,6 @@ final class SimpleHttpExchangeImpl extends SimpleHttpExchange {
 
     //
 
-
     @Override
     public String toString(){
         return "SimpleHttpExchange{" +

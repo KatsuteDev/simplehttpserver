@@ -16,7 +16,6 @@
  * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-
 package dev.katsute.simplehttpserver.handler;
 
 import com.sun.net.httpserver.Headers;

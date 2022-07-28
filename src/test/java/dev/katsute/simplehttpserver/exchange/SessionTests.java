@@ -10,7 +10,7 @@ import java.util.concurrent.atomic.AtomicReference;
 final class SessionTests {
 
     private static SimpleHttpServer server;
-    private static HttpSessionHandler sh = new HttpSessionHandler();
+    private static final HttpSessionHandler sh = new HttpSessionHandler();
 
     private static SimpleHttpExchange exchange;
 

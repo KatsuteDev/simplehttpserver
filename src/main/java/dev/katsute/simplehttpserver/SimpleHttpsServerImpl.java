@@ -113,7 +113,6 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
         server.setExecutor(executor);
     }
 
-
     //
 
     @Override
@@ -145,7 +144,6 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
         final String ct = ContextUtility.getContext(Objects.requireNonNull(context), true, false);
         if(!ct.equals("/") && Objects.requireNonNull(handler) instanceof RootHandler)
             throw new IllegalArgumentException("RootHandler can only be used at the root '/' context");
-
 
         final HttpContext hc = server.createContext(ct);
 
@@ -246,7 +244,6 @@ final class SimpleHttpsServerImpl extends SimpleHttpsServer {
     }
 
 // endregion
-
 
     @Override
     public String toString(){

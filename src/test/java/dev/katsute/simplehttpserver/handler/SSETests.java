@@ -36,7 +36,7 @@ final  class SSETests {
         handler.push("event2");
         handler.push("event3");
 
-        Thread.sleep(6000);
+        Thread.sleep(6000); // must have long delay
 
         Assertions.assertEquals("id: 2\ndata: event1\n\nid: 2\ndata: event2\n\nid: 2\ndata: event3", data.get());
     }

@@ -74,7 +74,6 @@ public class ThrottledHandler implements SimpleHttpHandler {
 
     //
 
-
     @Override
     public String toString(){
         return "ThrottledHandler{" +

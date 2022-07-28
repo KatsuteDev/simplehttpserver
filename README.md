@@ -5,9 +5,7 @@
     <h3>SimpleHttpServer</h3>
     <h5>A simple and efficient HTTP server for Java</h5>
     <div>
-        <a href="https://docs.katsute.dev/simplehttpserver">Documentation</a>
-        •
-        <a href="https://github.com/KatsuteDev/simplehttpserver/blob/main/setup.md#readme">Setup</a>
+        <a href="https://docs.katsute.dev/simplehttpserver5">Documentation</a>
     <br>
         <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
         •
@@ -19,7 +17,7 @@
 
 <br>
 
-> ⚠️ simplehttpserver5 is not compatible with any previous version of [simplehttpserver](https://github.com/Ktt-Development/simplehttpserver)
+> ⚠️ simplehttpserver5 is not compatible with any previous version of [simplehttpserver](https://github.com/Ktt-Development/simplehttpserver).
 
 Simplified httpserver experience for Java 8. Includes extensible servers and handlers for complex operations.
 
@@ -38,16 +36,18 @@ Compiled binaries can be installed from:
  - GitHub Packages
  - [Releases](https://github.com/KatsuteDev/simplehttpserver/releases)
 
+Refer to the [documentation](https://docs.katsute.dev/simplehttpserver5) to learn how to use servers and handlers.
+
 ## ✨ Features
 
 ### ✔️ Complicated tasks made easy
 
 Simplified exchange methods for:
 
- - Parsing HTTP `GET`/`POST` with `multipart/form-data` support.
- - Output stream writing with `#send`.
+ - Parsing `GET`/`POST` requests, including `multipart/form-data` support.
+ - Accessing cookies.
+ - Sending byte arrays, strings, and files to clients.
  - Sending gzip compressed responses.
- - Sending files
 
 ```java
 SimpleHttpHandler handler = new SimpleHttpHandler(){
@@ -56,26 +56,26 @@ SimpleHttpHandler handler = new SimpleHttpHandler(){
         Map POST = exchange.getPostMap();
         MultipartFormData form = exchange.getMultipartFormData();
         Record record = form.getRecord("record");
-        FileRecord file = (FileRecord) form.getRecord("file");
+        FileRecord file = form.getRecord("file").asFile();
         exchange.send(new File("OK.png"), true);
     }
 };
 ```
 
-### ⭐ Extended Features
+### ⭐ More Features
 
-Support for:
+Features not included with a regular HTTP server:
 
- - HTTP Cookies
- - HTTP Sessions
+ - Cookies
+ - Sessions
  - Multithreaded Servers
 
 ```java
 SimpleHttpServer server = new SimpleHttpServer(8080);
 server.setHttpSessionHandler(new HttpSessionHandler());
-HttpHandler handler = new HttpHandler(){
+SimpleHttpHandler handler = new SimpleHttpHandler(){
     @Override
-    public void handle(HttpExchange exchange){
+    public void handle(SimpleHttpExchange exchange){
         HttpSession session = server.getHttpSession(exchange);
         String session_id = session.getSessionID();
         Map<String,String> cookies = exchange.getCookies();
@@ -86,12 +86,13 @@ HttpHandler handler = new HttpHandler(){
 
 ### 🌐 Simplified Handlers
 
-Easy to use handlers:
+Simple and extensible request handlers:
 
  - Redirect Handler
  - Predicate Handler
+ - Root `/` Handler
  - File Handler
- - Server-Sent-Events Handler
+ - Server-Sent-Events (SSE) Handler
  - Temporary Handler
  - Throttled Handler
 
@@ -99,10 +100,10 @@ Easy to use handlers:
 RedirectHandler redirect = new RedirectHandler("https://github.com/");
 FileHandler fileHandler = new FileHandler();
 fileHandler.addFile(new File("index.html"));
-fileHandler.addDirectory(new File("/site"))
+fileHandler.addDirectory(new File("/site"));
 SSEHandler SSE = new SSEHandler();
 SSE.push("Server sent events!");
-ThrottledHandler throttled = new ThrottledHandler(new HttpHandler(), new ServerExchangeThrottler())
+ThrottledHandler throttled = new ThrottledHandler(new ServerExchangeThrottler(), new HttpHandler());
 ```
 
 ## 👨‍💻 Contributing

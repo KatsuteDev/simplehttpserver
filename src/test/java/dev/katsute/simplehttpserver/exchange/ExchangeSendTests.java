@@ -13,8 +13,8 @@ final class ExchangeSendTests {
 
     private static SimpleHttpServer server;
 
-    private static int testCode = HttpURLConnection.HTTP_ACCEPTED;
-    private static String testContent = String.valueOf(System.currentTimeMillis());
+    private static final int testCode = HttpURLConnection.HTTP_ACCEPTED;
+    private static final String testContent = String.valueOf(System.currentTimeMillis());
 
     @TempDir
     private static File dir = new File(testContent);

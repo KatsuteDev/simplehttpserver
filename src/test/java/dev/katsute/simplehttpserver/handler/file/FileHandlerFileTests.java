@@ -34,7 +34,6 @@ final class FileHandlerFileTests {
               .filter(o -> o != FileLoadingOption.CACHE)
               .forEach(blop -> files.put(new File(dir, blop.name()), blop));
 
-        // initial write
         files.forEach((file, loadingOption) -> {
             Assertions.assertDoesNotThrow(() ->  Files.write(file.toPath(), testContent.getBytes()));
             handler.addFile(file, new FileOptions.Builder().setLoadingOption(loadingOption).build());
