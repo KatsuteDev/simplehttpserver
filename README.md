@@ -5,7 +5,7 @@
     <h3>SimpleHttpServer</h3>
     <h5>A simple and efficient HTTP server for Java</h5>
     <div>
-        <a href="https://docs.katsute.dev/simplehttpserver5">Documentation</a>
+        <a href="https://docs.katsute.dev/simplehttpserver">Documentation</a>
     <br>
         <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
         •
@@ -36,7 +36,7 @@ Compiled binaries can be installed from:
  - [GitHub Packages](https://github.com/KatsuteDev/simplehttpserver/packages/1569580)
  - [Releases](https://github.com/KatsuteDev/simplehttpserver/releases)
 
-Refer to the [documentation](https://docs.katsute.dev/simplehttpserver5) to learn how to use servers and handlers.
+Refer to the [documentation](https://docs.katsute.dev/simplehttpserver) to learn how to use servers and handlers.
 
 ## ✨ Features
 
