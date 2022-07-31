@@ -9,7 +9,7 @@
     <br>
         <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
         •
-        GitHub Packages
+        <a href="https://github.com/KatsuteDev/simplehttpserver/packages/1569580">GitHub Packages</a>
         •
         <a href="https://github.com/KatsuteDev/simplehttpserver/releases">Releases</a>
     </div>
@@ -33,7 +33,7 @@ simplehttpserver5 requires at least Java 8. No additional dependencies/libraries
 Compiled binaries can be installed from:
 
  - [Maven Central](https://mvnrepository.com/artifact/dev.katsute/simplehttpserver)
- - GitHub Packages
+ - [GitHub Packages](https://github.com/KatsuteDev/simplehttpserver/packages/1569580)
  - [Releases](https://github.com/KatsuteDev/simplehttpserver/releases)
 
 Refer to the [documentation](https://docs.katsute.dev/simplehttpserver5) to learn how to use servers and handlers.
