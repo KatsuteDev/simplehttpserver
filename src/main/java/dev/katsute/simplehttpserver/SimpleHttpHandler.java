@@ -37,6 +37,7 @@ import java.io.IOException;
  * @see dev.katsute.simplehttpserver.handler.RootHandler
  * @see dev.katsute.simplehttpserver.handler.SSEHandler
  * @see dev.katsute.simplehttpserver.handler.TemporaryHandler
+ * @see dev.katsute.simplehttpserver.handler.TimeoutHandler
  * @see dev.katsute.simplehttpserver.handler.throttler.ThrottledHandler
  * @see dev.katsute.simplehttpserver.handler.file.FileHandler
  * @since 5.0.0

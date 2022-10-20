@@ -39,6 +39,7 @@
  *     <li>{@link dev.katsute.simplehttpserver.handler.RootHandler}</li>
  *     <li>{@link dev.katsute.simplehttpserver.handler.SSEHandler}</li>
  *     <li>{@link dev.katsute.simplehttpserver.handler.TemporaryHandler}</li>
+ *     <li>{@link dev.katsute.simplehttpserver.handler.TimeoutHandler}</li>
  *     <li>
  *         {@link dev.katsute.simplehttpserver.handler.file.FileHandler}
  *         <ul>
