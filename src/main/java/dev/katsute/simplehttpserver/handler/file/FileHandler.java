@@ -445,7 +445,10 @@ public class FileHandler implements SimpleHttpHandler {
      * @since 5.0.0
      */
     public void handle(final SimpleHttpExchange exchange, final File source, final byte[] bytes) throws IOException {
-        exchange.send(bytes, HttpURLConnection.HTTP_OK);
+        if(source == null)
+            exchange.send(HttpURLConnection.HTTP_NOT_FOUND);
+        else
+            exchange.send(bytes, HttpURLConnection.HTTP_OK);
     }
 
     //
