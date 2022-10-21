@@ -98,7 +98,6 @@ final class ThrottlerTests {
         @Test
         final void testExchange0(){
             server.createContext("server/exchange/0", new ThrottledHandler(ThrottlerTests.ServerExchangeThrottler(0, -1, false), handler));
-
             Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/exchange/0"));
         }
 
