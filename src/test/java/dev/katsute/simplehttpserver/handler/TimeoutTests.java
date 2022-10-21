@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 
 import java.io.IOException;
 import java.time.Duration;
+import java.time.temporal.ChronoUnit;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -39,7 +40,7 @@ final class TimeoutTests {
         final AtomicInteger code = new AtomicInteger();
 
         Assertions.assertTimeoutPreemptively(
-            Duration.of(3, TimeUnit.SECONDS.toChronoUnit()),
+            Duration.of(3, ChronoUnit.SECONDS),
             () -> code.set(Requests.getCode("http://localhost:8080/timeout/timeout"))
         );
 
@@ -61,7 +62,7 @@ final class TimeoutTests {
         final AtomicInteger code = new AtomicInteger();
 
         Assertions.assertTimeoutPreemptively(
-            Duration.of(3, TimeUnit.SECONDS.toChronoUnit()),
+            Duration.of(3, ChronoUnit.SECONDS),
             () -> code.set(Requests.getCode("http://localhost:8080/timeout/nou"))
         );
 
@@ -84,7 +85,7 @@ final class TimeoutTests {
         final AtomicInteger code = new AtomicInteger();
 
         Assertions.assertTimeout(
-            Duration.of(5, TimeUnit.SECONDS.toChronoUnit()),
+            Duration.of(5, ChronoUnit.SECONDS),
             () -> code.set(Requests.getCode("http://localhost:8080/timeout/pass"))
         );
 
