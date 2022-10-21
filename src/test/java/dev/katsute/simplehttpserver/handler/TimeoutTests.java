@@ -39,7 +39,7 @@ final class TimeoutTests {
 
         final AtomicInteger code = new AtomicInteger();
 
-        Assertions.assertTimeoutPreemptively(
+        Assertions.assertTimeout(
             Duration.of(3, ChronoUnit.SECONDS),
             () -> code.set(Requests.getCode("http://localhost:8080/timeout/timeout"))
         );
@@ -61,7 +61,7 @@ final class TimeoutTests {
 
         final AtomicInteger code = new AtomicInteger();
 
-        Assertions.assertTimeoutPreemptively(
+        Assertions.assertTimeout(
             Duration.of(3, ChronoUnit.SECONDS),
             () -> code.set(Requests.getCode("http://localhost:8080/timeout/nou"))
         );
@@ -82,14 +82,7 @@ final class TimeoutTests {
             TimeUnit.SECONDS
         ));
 
-        final AtomicInteger code = new AtomicInteger();
-
-        Assertions.assertTimeout(
-            Duration.of(5, ChronoUnit.SECONDS),
-            () -> code.set(Requests.getCode("http://localhost:8080/timeout/pass"))
-        );
-
-        Assertions.assertEquals(200, code.get());
+        Assertions.assertEquals(200, Requests.getCode("http://localhost:8080/timeout/pass"));
     }
 
 }
