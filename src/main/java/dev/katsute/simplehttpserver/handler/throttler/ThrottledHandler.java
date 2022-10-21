@@ -69,6 +69,8 @@ public class ThrottledHandler implements SimpleHttpHandler {
             }finally{
                 throttler.deleteConnection(exchange);
             }
+        else
+            exchange.send(429); // too many requests
         exchange.close();
     }
 

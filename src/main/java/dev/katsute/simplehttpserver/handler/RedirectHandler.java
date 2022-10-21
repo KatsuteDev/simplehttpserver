@@ -22,7 +22,6 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
 import java.util.Objects;
 
 /**
@@ -50,7 +49,7 @@ public class RedirectHandler implements HttpHandler {
     @Override
     public final void handle(final HttpExchange exchange) throws IOException{
         exchange.getResponseHeaders().set("Location", link);
-        exchange.sendResponseHeaders(HttpURLConnection.HTTP_OK, 0);
+        exchange.sendResponseHeaders(308, 0); // permanent redirect
         exchange.close();
     }
 

@@ -23,6 +23,7 @@ import com.sun.net.httpserver.HttpHandler;
 import dev.katsute.simplehttpserver.SimpleHttpServer;
 
 import java.io.IOException;
+import java.net.HttpURLConnection;
 import java.util.Objects;
 
 /**
@@ -69,6 +70,8 @@ public class TemporaryHandler implements HttpHandler {
     public synchronized final void handle(final HttpExchange exchange) throws IOException{
         if(expiry == null || System.currentTimeMillis() < expiry) // expire on first connection or past expiry
             handler.handle(exchange);
+        else
+            exchange.sendResponseHeaders(HttpURLConnection.HTTP_NOT_FOUND, 0);
         exchange.getHttpContext().getServer().removeContext(exchange.getHttpContext());
         exchange.close();
     }

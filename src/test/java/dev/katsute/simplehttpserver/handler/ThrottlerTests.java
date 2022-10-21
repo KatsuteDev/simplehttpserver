@@ -5,7 +5,6 @@ import dev.katsute.simplehttpserver.handler.throttler.*;
 import org.junit.jupiter.api.*;
 
 import java.io.IOException;
-import java.io.UncheckedIOException;
 import java.util.concurrent.Executors;
 
 final class ThrottlerTests {
@@ -52,7 +51,7 @@ final class ThrottlerTests {
         @Test
         final void testExchange0(){
             server.createContext("exchange/0", new ThrottledHandler(ThrottlerTests.ExchangeThrottler(0), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/exchange/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/exchange/0"));
         }
 
         @Test
@@ -62,7 +61,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/exchange/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/exchange/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/exchange/1"));
         }
 
         @Test
@@ -99,7 +98,7 @@ final class ThrottlerTests {
         @Test
         final void testExchange0(){
             server.createContext("server/exchange/0", new ThrottledHandler(ThrottlerTests.ServerExchangeThrottler(0, -1, false), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/exchange/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/exchange/0"));
         }
 
         @Test
@@ -109,7 +108,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/server/exchange/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/exchange/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/exchange/1"));
         }
 
         @Test
@@ -125,7 +124,7 @@ final class ThrottlerTests {
         @Test
         final void testServerExchange0(){
             server.createContext("server/exchange-server/0", new ThrottledHandler(ThrottlerTests.ServerExchangeThrottler(-1, 0, false), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/exchange-server/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/exchange-server/0"));
         }
 
         @Test
@@ -135,7 +134,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/server/exchange-server/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/exchange-server/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/exchange-server/1"));
         }
 
         @Test
@@ -182,7 +181,7 @@ final class ThrottlerTests {
         @Test
         final void testSession0(){
             server.createContext("session/0", new ThrottledHandler(ThrottlerTests.SessionThrottler(server.getSessionHandler(), 0), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/session/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/session/0"));
         }
 
         @Test
@@ -195,7 +194,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/session/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/session/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/session/1"));
         }
 
         @Test
@@ -240,7 +239,7 @@ final class ThrottlerTests {
         @Test
         final void testSession0(){
             server.createContext("server/session/0", new ThrottledHandler(ThrottlerTests.ServerSessionThrottler(server.getSessionHandler(),0, -1, false), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/session/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/session/0"));
         }
 
         @Test
@@ -253,7 +252,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/server/session/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/session/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/session/1"));
         }
 
         @Test
@@ -272,7 +271,7 @@ final class ThrottlerTests {
         @Test
         final void testServerSession0(){
             server.createContext("server/session-server/0", new ThrottledHandler(ThrottlerTests.ServerSessionThrottler(server.getSessionHandler(),-1, 0, false), handler));
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/session-server/0"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/session-server/0"));
         }
 
         @Test
@@ -285,7 +284,7 @@ final class ThrottlerTests {
             new Thread(() -> Requests.getCode("http://localhost:8080/server/session-server/1")).start();
             Thread.sleep(250);
 
-            Assertions.assertThrows(UncheckedIOException.class, () -> Requests.getCode("http://localhost:8080/server/session-server/1"));
+            Assertions.assertEquals(429, Requests.getCode("http://localhost:8080/server/session-server/1"));
         }
 
         @Test
