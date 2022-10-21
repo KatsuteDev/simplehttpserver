@@ -40,7 +40,7 @@ public class TimeoutHandler implements SimpleHttpHandler {
     private final HttpHandler handler;
 
     private final TimeUnit unit;
-    private final double timeout;
+    private final long timeout;
 
     private final ExecutorService service = Executors.newCachedThreadPool();
 
@@ -68,7 +68,7 @@ public class TimeoutHandler implements SimpleHttpHandler {
      */
     public TimeoutHandler(final HttpHandler handler, final double timeout, final TimeUnit unit){
         this.handler = Objects.requireNonNull(handler);
-        this.timeout = timeout;
+        this.timeout = (long) timeout;
         this.unit = Objects.requireNonNull(unit);
     }
 
@@ -87,7 +87,7 @@ public class TimeoutHandler implements SimpleHttpHandler {
             }
         });
         try{
-            future.get((long) timeout, unit);
+            future.get(timeout, unit);
         }catch(final Throwable e){
             future.cancel(true);
             exchange.send(HttpURLConnection.HTTP_CLIENT_TIMEOUT);
