@@ -6,6 +6,7 @@ import org.junit.jupiter.api.*;
 import java.io.IOException;
 import java.time.Duration;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 final class TimeoutTests {
 
@@ -28,37 +29,43 @@ final class TimeoutTests {
             (SimpleHttpHandler) exchange -> {
                 try{
                     Thread.sleep(4000);
-                }catch(InterruptedException ignored){
-
-                }
+                    exchange.send(200);
+                }catch(InterruptedException ignored){}
             },
             2,
             TimeUnit.SECONDS
         ));
 
+        final AtomicInteger code = new AtomicInteger();
+
         Assertions.assertTimeoutPreemptively(
-            Duration.of((long) 2.1, TimeUnit.SECONDS.toChronoUnit()),
-            () ->Requests.getBody("http://localhost:8080/timeout/timeout")
+            Duration.of(3, TimeUnit.SECONDS.toChronoUnit()),
+            () -> code.set(Requests.getCode("http://localhost:8080/timeout/timeout"))
         );
+
+        Assertions.assertEquals(408, code.get());
     }
 
     @Test
     final void testTimeoutSeconds(){
-        server.createContext("timeout/unit", new TimeoutHandler(
+        server.createContext("timeout/nou", new TimeoutHandler(
             (SimpleHttpHandler) exchange -> {
                 try{
                     Thread.sleep(4000);
-                }catch(final InterruptedException ignored){
-
-                }
+                    exchange.send(200);
+                }catch(InterruptedException ignored){}
             },
             2
         ));
 
+        final AtomicInteger code = new AtomicInteger();
+
         Assertions.assertTimeoutPreemptively(
-            Duration.of((long) 2.1, TimeUnit.SECONDS.toChronoUnit()),
-            () ->Requests.getBody("http://localhost:8080/timeout/unit")
+            Duration.of(3, TimeUnit.SECONDS.toChronoUnit()),
+            () -> code.set(Requests.getCode("http://localhost:8080/timeout/nou"))
         );
+
+        Assertions.assertEquals(408, code.get());
     }
 
     @Test
@@ -67,18 +74,21 @@ final class TimeoutTests {
             (SimpleHttpHandler) exchange -> {
                 try{
                     Thread.sleep(4000);
-                }catch(InterruptedException ignored){
-
-                }
+                    exchange.send(200);
+                }catch(InterruptedException ignored){}
             },
             5,
             TimeUnit.SECONDS
         ));
 
+        final AtomicInteger code = new AtomicInteger();
+
         Assertions.assertTimeout(
-            Duration.of((long) 4.1, TimeUnit.SECONDS.toChronoUnit()),
-            () ->Requests.getBody("http://localhost:8080/timeout/pass")
+            Duration.of(5, TimeUnit.SECONDS.toChronoUnit()),
+            () -> code.set(Requests.getCode("http://localhost:8080/timeout/pass"))
         );
+
+        Assertions.assertEquals(200, code.get());
     }
 
 }
