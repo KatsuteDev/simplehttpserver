@@ -94,6 +94,7 @@ Simple and extensible request handlers:
  - File Handler
  - Server-Sent-Events (SSE) Handler
  - Temporary Handler
+ - Timeout Handler
  - Throttled Handler
 
 ```java
