@@ -29,100 +29,100 @@ final class ServerTests {
     //
 
     @Test
-        final void testRandomContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    final void testRandomContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            final String test = server.getRandomContext();
-            assertNotNull(test);
-            server.createContext(test);
-            for(int i = 0; i < 100; i++)
-                assertNotEquals(test, server.getRandomContext());
-        }
+        final String test = server.getRandomContext();
+        assertNotNull(test);
+        server.createContext(test);
+        for(int i = 0; i < 100; i++)
+            assertNotEquals(test, server.getRandomContext());
+    }
 
-        @Test
-        final void testRandomContextHead() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testRandomContextHead() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            final String test = server.getRandomContext("/head");
-            assertNotNull(test);
-            assertTrue(test.startsWith("/head/"));
-            server.createContext(test);
-            for(int i = 0; i < 100; i++)
-                assertNotEquals(test, server.getRandomContext("/head"));
-        }
+        final String test = server.getRandomContext("/head");
+        assertNotNull(test);
+        assertTrue(test.startsWith("/head/"));
+        server.createContext(test);
+        for(int i = 0; i < 100; i++)
+            assertNotEquals(test, server.getRandomContext("/head"));
+    }
 
-        @Test
-        final void testRemoveNullContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testRemoveNullContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            assertThrows(NullPointerException.class, () -> server.removeContext((String) null));
-            assertThrows(NullPointerException.class, () -> server.removeContext((HttpContext) null));
-            assertThrows(IllegalArgumentException.class, () -> server.removeContext(""));
-        }
+        assertThrows(NullPointerException.class, () -> server.removeContext((String) null));
+        assertThrows(NullPointerException.class, () -> server.removeContext((HttpContext) null));
+        assertThrows(IllegalArgumentException.class, () -> server.removeContext(""));
+    }
 
-        @Test
-        final void testRemoveContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testRemoveContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            server.createContext("");
-            assertDoesNotThrow(() -> server.removeContext(""));
-            assertDoesNotThrow(() -> server.removeContext(server.createContext("")));
-        }
+        server.createContext("");
+        assertDoesNotThrow(() -> server.removeContext(""));
+        assertDoesNotThrow(() -> server.removeContext(server.createContext("")));
+    }
 
-        @Test
-        final void testRemoveNativeContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testRemoveNativeContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            server.getHttpServer().createContext("/");
-            assertDoesNotThrow(() -> server.removeContext(""));
+        server.getHttpServer().createContext("/");
+        assertDoesNotThrow(() -> server.removeContext(""));
 
-            assertDoesNotThrow(() -> server.removeContext(server.getHttpServer().createContext("/")));
+        assertDoesNotThrow(() -> server.removeContext(server.getHttpServer().createContext("/")));
 
-            server.getHttpServer().removeContext(server.createContext("/"));
-            assertDoesNotThrow(() -> server.createContext("/"));
-        }
+        server.getHttpServer().removeContext(server.createContext("/"));
+        assertDoesNotThrow(() -> server.createContext("/"));
+    }
 
-        @Test
-        final void testCreateContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testCreateContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            server.createContext("");
-            assertEquals(1, server.getContexts().size());
+        server.createContext("");
+        assertEquals(1, server.getContexts().size());
 
-            final SimpleHttpHandler handler = SimpleHttpExchange::close;
+        final SimpleHttpHandler handler = SimpleHttpExchange::close;
 
-            assertSame(handler, server.getContextHandler(server.createContext("close", handler)));
-            assertEquals(2, server.getContexts().size());
-        }
+        assertSame(handler, server.getContextHandler(server.createContext("close", handler)));
+        assertEquals(2, server.getContexts().size());
+    }
 
-        @Test
-        final void testCreateSlashContext() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test
+    final void testCreateSlashContext() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            assertEquals("/", server.createContext("/").getPath());
-            server.removeContext("/");
-            assertEquals("/", server.createContext("\\").getPath());
-            server.removeContext("/");
-            assertEquals("/", server.createContext("").getPath());
-            server.removeContext("/");
-        }
+        assertEquals("/", server.createContext("/").getPath());
+        server.removeContext("/");
+        assertEquals("/", server.createContext("\\").getPath());
+        server.removeContext("/");
+        assertEquals("/", server.createContext("").getPath());
+        server.removeContext("/");
+    }
 
-        @Test @EnabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
-        final void testDuplicateContext8() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test @EnabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+    final void testDuplicateContext8() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            server.createContext("");
+        server.createContext("");
 
-            assertDoesNotThrow(() -> server.createContext("", HttpExchange::close));
-        }
+        assertDoesNotThrow(() -> server.createContext("", HttpExchange::close));
+    }
 
-        @Test @DisabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
-        final void testDuplicateContext18() throws IOException{
-            final SimpleHttpServer server = SimpleHttpServer.create();
+    @Test @DisabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+    final void testDuplicateContext18() throws IOException{
+        final SimpleHttpServer server = SimpleHttpServer.create();
 
-            server.createContext("");
+        server.createContext("");
 
-            assertThrows(IllegalArgumentException.class, () -> server.createContext("", HttpExchange::close));
-        }
+        assertThrows(IllegalArgumentException.class, () -> server.createContext("", HttpExchange::close));
+    }
 
 }
