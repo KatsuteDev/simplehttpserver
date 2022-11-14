@@ -2,17 +2,17 @@
     "image": "maven:3-eclipse-temurin-17",
     "onCreateCommand": "mvn compile",
     "shutdownAction": "stopContainer",
-	"forwardPorts": [
-		8080
-	],
-	"customizations": {
-		"vscode": {
-			"extensions": [
-				"vscjava.vscode-java-dependency",
-				"vscjava.vscode-java-debug",
-				"vscjava.vscode-maven",
-				"redhat.java"
-			]
-		}
-	}
+    "forwardPorts": [
+        8080
+    ],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "vscjava.vscode-java-dependency",
+                "vscjava.vscode-java-debug",
+                "vscjava.vscode-maven",
+                "redhat.java"
+            ]
+        }
+    }
 }
