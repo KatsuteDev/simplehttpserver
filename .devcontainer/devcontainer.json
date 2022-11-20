@@ -1,6 +1,6 @@
 {
     "image": "maven:3-eclipse-temurin-17",
-    "onCreateCommand": "mvn compile",
+    "postAttachCommand": "mvn compile",
     "shutdownAction": "stopContainer",
     "forwardPorts": [
         8080
