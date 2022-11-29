@@ -1,7 +1,7 @@
 # Changelog
 
-# 1.0.0
+## 5.0.0
 
-Initial Release
+Initial release
 
 **Full Changelog**: [`5.0.0`](https://github.com/KatsuteDev/simplehttpserver/commits/5.0.0)
