@@ -4,4 +4,4 @@
 
 Initial Release
 
-**Full Changelog**: https://github.com/KatsuteDev/simplehttpserver/commits/1.0.0
+**Full Changelog**: [`5.0.0`](https://github.com/KatsuteDev/simplehttpserver/commits/5.0.0)

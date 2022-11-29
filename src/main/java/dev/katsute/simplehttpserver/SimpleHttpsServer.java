@@ -46,7 +46,6 @@ public abstract class SimpleHttpsServer extends HttpsServer implements HttpServe
      * @see #create(int, int)
      * @see #create(InetSocketAddress, int)
      * @since 5.0.0
-     * @author Katsute
      */
     public static SimpleHttpsServer create() throws IOException {
         return new SimpleHttpsServerImpl(null, null);
@@ -64,7 +63,6 @@ public abstract class SimpleHttpsServer extends HttpsServer implements HttpServe
      * @see #create(int, int)
      * @see #create(InetSocketAddress, int)
      * @since 5.0.0
-     * @author Katsute
      */
     public static SimpleHttpsServer create(final int port) throws IOException {
         return new SimpleHttpsServerImpl(port, null);
@@ -83,7 +81,6 @@ public abstract class SimpleHttpsServer extends HttpsServer implements HttpServe
      * @see #create(int)
      * @see #create(InetSocketAddress, int)
      * @since 5.0.0
-     * @author Katsute
      */
     public static SimpleHttpsServer create(final int port, final int backlog) throws IOException {
         return new SimpleHttpsServerImpl(port, backlog);
