@@ -117,9 +117,6 @@ ThrottledHandler throttled = new ThrottledHandler(new ServerExchangeThrottler(),
 </table>
 <!-- GitHub Copilot Disclaimer -->
 
- - Found a bug? Post it in [issues](https://github.com/KatsuteDev/simplehttpserver/issues).
- - Want to further expand our project? [Fork](https://github.com/KatsuteDev/simplehttpserver/fork) this repository and submit a [pull request](https://github.com/KatsuteDev/simplehttpserver/pulls).
-
 #### 💻 Running Tests Locally
 
 For local tests you can use Java 8+, however only methods in the Java 8 API may be used. The `src/main/java9` folder should not be marked as a source root.
