@@ -109,13 +109,13 @@ ThrottledHandler throttled = new ThrottledHandler(new ServerExchangeThrottler(),
 
 ## 👨‍💻 Contributing
 
-<!-- GitHub Copilot Disclaimer -->
+<!-- Copilot -->
 <table>
     <img alt="GitHub Copilot" align="left" src="https://raw.githubusercontent.com/KatsuteDev/.github/main/profile/copilot-dark.png#gh-dark-mode-only" width="50">
     <img alt="GitHub Copilot" align="left" src="https://raw.githubusercontent.com/KatsuteDev/.github/main/profile/copilot-light.png#gh-light-mode-only" width="50">
     <p>GitHub Copilot is <b>strictly prohibited</b> on this repository.<br>Pulls using this will be rejected.</p>
 </table>
-<!-- GitHub Copilot Disclaimer -->
+<!-- Copilot -->
 
 #### 💻 Running Tests Locally
 
