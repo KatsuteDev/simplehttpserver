@@ -6,7 +6,7 @@
 
     <groupId>dev.katsute</groupId>
     <artifactId>simplehttpserver</artifactId>
-    <version>5.0.0</version>
+    <version>5.0.1</version>
 
     <profiles>
         <profile>
