@@ -127,7 +127,7 @@ For local tests you can use Java 8+, however only methods in the Java 8 API may 
 
 Each commit automatically triggers the Java CI workflow, make sure you have actions enabled on your forks.
 
-<p align="right">(<a href="#top">back to top</a>)</p>
+<div align="right"><a href="#top"><code>▲</code></a></div>
 
 <hr>
 
