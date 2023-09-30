@@ -107,7 +107,7 @@ final class ServerTests {
         server.removeContext("/");
     }
 
-    @Test @EnabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+    @Test @EnabledForJreRange(min=JRE.JAVA_8)
     final void testDuplicateContext8() throws IOException{
         final SimpleHttpServer server = SimpleHttpServer.create();
 
@@ -116,7 +116,7 @@ final class ServerTests {
         assertDoesNotThrow(() -> server.createContext("", HttpExchange::close));
     }
 
-    @Test @DisabledForJreRange(min=JRE.JAVA_8, max=JRE.JAVA_17)
+    @Test @DisabledForJreRange(min=JRE.JAVA_8)
     final void testDuplicateContext18() throws IOException{
         final SimpleHttpServer server = SimpleHttpServer.create();
 
