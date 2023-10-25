@@ -3,10 +3,10 @@
         <img src="https://raw.githubusercontent.com/KatsuteDev/simplehttpserver/main/assets/icon.png" alt="icon" width="100" height="100">
     </a>
     <h3>SimpleHttpServer</h3>
-    <h5>A simple and efficient HTTP server for Java</h5>
+    <strong>A simple and efficient HTTP server for Java</strong>
     <div>
         <a href="https://docs.katsute.dev/simplehttpserver">Documentation</a>
-    <br>
+        <br>
         <a href="https://mvnrepository.com/artifact/dev.katsute/simplehttpserver">Maven Central</a>
         •
         <a href="https://github.com/KatsuteDev/simplehttpserver/packages/1569580">GitHub Packages</a>
@@ -21,33 +21,30 @@
 
 Simplified httpserver experience for Java 8. Includes extensible servers and handlers for complex operations.
 
- - [📃 Installation](#-installation)
- - [✨ Features](#-features)
- - [👨‍💻 Contributing](#-contributing)
- - [💼 License](#-license)
+## Installation
 
-## 📃 Installation
-
-simplehttpserver5 requires at least Java 8. No additional dependencies/libraries are required.
+This library requires at least Java 8. No additional dependencies are required.
 
 Compiled binaries can be installed from:
 
- - [Maven Central](https://mvnrepository.com/artifact/dev.katsute/simplehttpserver)
- - [GitHub Packages](https://github.com/KatsuteDev/simplehttpserver/packages/1569580)
- - [Releases](https://github.com/KatsuteDev/simplehttpserver/releases)
+ * [Maven Central](https://mvnrepository.com/artifact/dev.katsute/simplehttpserver)
+ * [GitHub Packages](https://github.com/KatsuteDev/simplehttpserver/packages/1569580)
+ * [Releases](https://github.com/KatsuteDev/simplehttpserver/releases)
 
 Refer to the [documentation](https://docs.katsute.dev/simplehttpserver) to learn how to use servers and handlers.
 
-## ✨ Features
+<div align="right"><a href="#top"><code>▲</code></a></div>
 
-### ✔️ Complicated tasks made easy
+## Features
+
+### Complicated tasks made easy
 
 Simplified exchange methods for:
 
- - Parsing `GET`/`POST` requests, including `multipart/form-data` support.
- - Accessing cookies.
- - Sending byte arrays, strings, and files to clients.
- - Sending gzip compressed responses.
+ * Parsing `GET`/`POST` requests, including `multipart/form-data` support.
+ * Accessing cookies.
+ * Sending byte arrays, strings, and files to clients.
+ * Sending gzip compressed responses.
 
 ```java
 SimpleHttpHandler handler = new SimpleHttpHandler(){
@@ -62,13 +59,13 @@ SimpleHttpHandler handler = new SimpleHttpHandler(){
 };
 ```
 
-### ⭐ More Features
+### More Features
 
 Features not included with a regular HTTP server:
 
- - Cookies
- - Sessions
- - Multithreaded Servers
+ * Cookies
+ * Sessions
+ * Multithreaded Servers
 
 ```java
 SimpleHttpServer server = new SimpleHttpServer(8080);
@@ -84,18 +81,18 @@ SimpleHttpHandler handler = new SimpleHttpHandler(){
 };
 ```
 
-### 🌐 Simplified Handlers
+### Simplified Handlers
 
 Simple and extensible request handlers:
 
- - Redirect Handler
- - Predicate Handler
- - Root `/` Handler
- - File Handler
- - Server-Sent-Events (SSE) Handler
- - Temporary Handler
- - Timeout Handler
- - Throttled Handler
+ * Redirect Handler
+ * Predicate Handler
+ * Root `/` Handler
+ * File Handler
+ * Server-Sent-Events (SSE) Handler
+ * Temporary Handler
+ * Timeout Handler
+ * Throttled Handler
 
 ```java
 RedirectHandler redirect = new RedirectHandler("https://github.com/");
@@ -107,7 +104,9 @@ SSE.push("Server sent events!");
 ThrottledHandler throttled = new ThrottledHandler(new ServerExchangeThrottler(), new HttpHandler());
 ```
 
-## 👨‍💻 Contributing
+<div align="right"><a href="#top"><code>▲</code></a></div>
+
+## Contributing
 
 <!-- Copilot -->
 <table>
@@ -119,18 +118,16 @@ ThrottledHandler throttled = new ThrottledHandler(new ServerExchangeThrottler(),
 </table>
 <!-- Copilot -->
 
-#### 💻 Running Tests Locally
+#### Running Tests Locally
 
 For local tests you can use Java 8+, however only methods in the Java 8 API may be used. The `src/main/java9` folder should not be marked as a source root.
 
-#### 🌐 Running Tests using GitHub Actions
+#### Running Tests using GitHub Actions
 
 Each commit automatically triggers the Java CI workflow, make sure you have actions enabled on your forks.
 
 <div align="right"><a href="#top"><code>▲</code></a></div>
 
-<hr>
-
-### 💼 License
+## &nbsp;
 
 This library is released under the [GNU General Public License (GPL) v2.0](https://github.com/KatsuteDev/simplehttpserver/blob/main/LICENSE).
