@@ -6,7 +6,7 @@
 
     <groupId>dev.katsute</groupId>
     <artifactId>simplehttpserver</artifactId>
-    <version>5.0.1</version>
+    <version>5.0.2</version>
 
     <profiles>
         <profile>
@@ -224,6 +224,10 @@
                         <!-- suppress missing documentation -->
                         <additionalOption>-Xdoclint:-missing</additionalOption>
                     </additionalOptions>
+                    <!-- fix missing httpserver javadoc -->
+                    <links>
+                        <link>https://docs.oracle.com/en/java/javase/21/docs/api/jdk.httpserver/com/sun/net/httpserver/spec</link>
+                    </links>
                     <!-- generate javadoc for /java and /java9 -->
                     <sourcepath>${project.basedir}/src/main/java;${project.basedir}/src/main/java9</sourcepath>
                 </configuration>
