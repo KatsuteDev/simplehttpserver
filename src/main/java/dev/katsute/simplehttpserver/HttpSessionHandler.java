@@ -81,7 +81,7 @@ public class HttpSessionHandler {
                         return value.substring(cookie.length() + 2, value.length() - 1);
                 break;
             }
-       return null;
+        return null;
     }
 
     /**

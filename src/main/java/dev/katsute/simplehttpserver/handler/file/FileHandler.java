@@ -372,7 +372,7 @@ public class FileHandler implements SimpleHttpHandler {
      * @since 5.0.0
      */
     public final void removeDirectory(final File directory, final FileOptions options){
-       removeDirectory(ContextUtility.joinContexts(true, false, options.context, getName(directory)));
+        removeDirectory(ContextUtility.joinContexts(true, false, options.context, getName(directory)));
     }
 
     //
